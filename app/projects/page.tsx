@@ -1,17 +1,32 @@
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import DashboardShell from "../_components/DashboardShell";
 import ProjectsManager from "./_components/ProjectsManager";
+import { getQueryClient } from "@/lib/get-query-client";
+import { projectsQueryOptions } from "@/lib/api/projects";
+import { getProjects } from "@/lib/projects/server";
 
 export const metadata = {
   title: "Projects — bloggy.",
   description: "Manage your content workspace projects and databases.",
 };
 
-export default function ProjectsPage() {
+export const dynamic = "force-dynamic";
+
+export default async function ProjectsPage() {
+  const queryClient = getQueryClient();
+
+  await queryClient.prefetchQuery({
+    ...projectsQueryOptions(),
+    queryFn: getProjects,
+  });
+
   return (
-    <DashboardShell>
-      <main className="p-lg space-y-lg">
-        <ProjectsManager />
-      </main>
-    </DashboardShell>
+    <HydrationBoundary state={dehydrate(queryClient)}>
+      <DashboardShell>
+        <main className="p-lg space-y-lg">
+          <ProjectsManager />
+        </main>
+      </DashboardShell>
+    </HydrationBoundary>
   );
 }

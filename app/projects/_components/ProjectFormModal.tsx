@@ -16,11 +16,12 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import { projectFormSchema, ProjectFormValues } from "@/lib/validations/project";
 
 interface ProjectFormModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSubmit: (data: { name: string; description: string; mongodbUri: string; category: "production" | "staging" | "development" }) => void;
+  onSubmit: (data: ProjectFormValues) => void;
   project?: Project | null;
 }
 
@@ -44,42 +45,33 @@ export default function ProjectFormModal({
   const [connectionStatus, setConnectionStatus] = useState<"success" | "error" | null>(null);
 
   const validate = () => {
-    let isValid = true;
+    const result = projectFormSchema.safeParse({
+      name,
+      description,
+      mongodbUri,
+      category,
+    });
 
-    if (!name.trim()) {
-      setNameError("Project name is required.");
-      isValid = false;
-    } else {
+    if (result.success) {
       setNameError("");
-    }
-
-    if (!mongodbUri.trim()) {
-      setUriError("MongoDB connection link is required.");
-      isValid = false;
-    } else if (
-      !mongodbUri.startsWith("mongodb://") &&
-      !mongodbUri.startsWith("mongodb+srv://")
-    ) {
-      setUriError("Connection link must start with mongodb:// or mongodb+srv://");
-      isValid = false;
-    } else {
       setUriError("");
+      return result.data;
     }
 
-    return isValid;
+    const flattened = result.error.flatten();
+    setNameError(flattened.fieldErrors.name?.[0] || "");
+    setUriError(flattened.fieldErrors.mongodbUri?.[0] || "");
+
+    return null;
   };
 
   const handleTestConnection = async () => {
-    if (!mongodbUri.trim()) {
-      setUriError("Please enter a connection link first.");
-      setConnectionStatus(null);
-      return;
-    }
-    if (
-      !mongodbUri.startsWith("mongodb://") &&
-      !mongodbUri.startsWith("mongodb+srv://")
-    ) {
-      setUriError("Connection link must start with mongodb:// or mongodb+srv://");
+    const uriResult = projectFormSchema
+      .pick({ mongodbUri: true })
+      .safeParse({ mongodbUri });
+
+    if (!uriResult.success) {
+      setUriError(uriResult.error.flatten().fieldErrors.mongodbUri?.[0] || "");
       setConnectionStatus(null);
       return;
     }
@@ -109,8 +101,10 @@ export default function ProjectFormModal({
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (validate()) {
-      onSubmit({ name, description, mongodbUri, category });
+    const parsedData = validate();
+
+    if (parsedData) {
+      onSubmit(parsedData);
       onClose();
     }
   };

@@ -6,12 +6,14 @@ import StarterKit from "@tiptap/starter-kit";
 import Underline from "@tiptap/extension-underline";
 import Link from "@tiptap/extension-link";
 import Placeholder from "@tiptap/extension-placeholder";
-import { Project, PostStatus } from "@/types";
+import { PostStatus } from "@/types";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { Save, Eye, FileText } from "lucide-react";
 import EditorToolbar from "./EditorToolbar";
 import EditorSidebar from "./EditorSidebar";
+import { useQuery } from "@tanstack/react-query";
+import { projectsQueryOptions } from "@/lib/api/projects";
 
 function slugify(str: string): string {
   return str
@@ -34,15 +36,7 @@ export default function EditorForm() {
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
 
-  const [projects] = useState<Project[]>(() => {
-    if (typeof window === "undefined") return [];
-    try {
-      const stored = localStorage.getItem("bloggy_projects");
-      return stored ? (JSON.parse(stored) as Project[]) : [];
-    } catch {
-      return [];
-    }
-  });
+  const { data: projects = [] } = useQuery(projectsQueryOptions());
   const [isSaving, setIsSaving] = useState(false);
   const [wordCount, setWordCount] = useState(0);
 

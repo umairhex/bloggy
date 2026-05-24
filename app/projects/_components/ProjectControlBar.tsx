@@ -16,7 +16,8 @@ interface ProjectControlBarProps {
   setSearchQuery: (query: string) => void;
   sortBy: string;
   setSortBy: (sortBy: string) => void;
-  onResetDefaults: () => void;
+  onRefreshProjects: () => void;
+  isRefreshing: boolean;
   onNewProject: () => void;
 }
 
@@ -25,7 +26,8 @@ export default function ProjectControlBar({
   setSearchQuery,
   sortBy,
   setSortBy,
-  onResetDefaults,
+  onRefreshProjects,
+  isRefreshing,
   onNewProject,
 }: ProjectControlBarProps) {
   return (
@@ -72,11 +74,12 @@ export default function ProjectControlBar({
       <div className="flex items-center gap-md shrink-0">
         <Button
           variant="outline"
-          onClick={onResetDefaults}
+          onClick={onRefreshProjects}
+          disabled={isRefreshing}
           className="h-10 border-hairline text-ink hover:bg-surface-soft gap-sm px-md rounded-sm cursor-pointer"
         >
-          <RefreshCw size={14} />
-          Reset Defaults
+          <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
+          Refresh
         </Button>
         <Button
           onClick={onNewProject}

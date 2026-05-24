@@ -7,14 +7,12 @@ import { Button } from "@/components/ui/button";
 interface ProjectEmptyStateProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
-  onResetDefaults: () => void;
   onNewProject: () => void;
 }
 
 export default function ProjectEmptyState({
   searchQuery,
   setSearchQuery,
-  onResetDefaults,
   onNewProject,
 }: ProjectEmptyStateProps) {
   return (
@@ -40,22 +38,13 @@ export default function ProjectEmptyState({
             Clear Search
           </Button>
         ) : (
-          <>
-            <Button
-              variant="outline"
-              className="h-10 px-md text-sm border-hairline text-ink rounded-sm font-medium cursor-pointer animate-fade-in"
-              onClick={onResetDefaults}
-            >
-              Load Sample Data
-            </Button>
-            <Button
-              className="h-10 px-lg text-sm bg-primary hover:bg-primary-active text-on-primary font-medium rounded-sm shadow-sm gap-sm flex items-center transition-colors cursor-pointer"
-              onClick={onNewProject}
-            >
-              <Plus size={16} />
-              Connect Database
-            </Button>
-          </>
+          <Button
+            className="h-10 px-lg text-sm bg-primary hover:bg-primary-active text-on-primary font-medium rounded-sm shadow-sm gap-sm flex items-center transition-colors cursor-pointer"
+            onClick={onNewProject}
+          >
+            <Plus size={16} />
+            Connect Database
+          </Button>
         )}
       </div>
     </div>

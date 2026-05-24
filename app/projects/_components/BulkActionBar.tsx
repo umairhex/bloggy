@@ -2,8 +2,9 @@
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Trash2, Edit, X } from "lucide-react";
+import { Trash2, Edit } from "lucide-react";
 import { motion } from "motion/react";
+import { mongodbUriSchema } from "@/lib/validations/project";
 
 interface BulkActionBarProps {
   selectedCount: number;
@@ -24,15 +25,13 @@ export default function BulkActionBar({
 
   const handleBulkUpdateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!bulkUri.trim()) {
-      setError("URI is required.");
+    const parsedUri = mongodbUriSchema.safeParse(bulkUri);
+
+    if (!parsedUri.success) {
+      setError(parsedUri.error.flatten().formErrors[0] || "Invalid MongoDB URI.");
       return;
     }
-    if (!bulkUri.startsWith("mongodb://") && !bulkUri.startsWith("mongodb+srv://")) {
-      setError("Must start with mongodb:// or mongodb+srv://");
-      return;
-    }
-    onBulkUpdate(bulkUri);
+    onBulkUpdate(parsedUri.data);
     setBulkUri("");
     setError("");
     setShowBulkEditForm(false);
