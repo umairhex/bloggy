@@ -12,9 +12,9 @@ export const navItems: NavSection[] = [
     label: "Workspace",
     links: [
       { icon: LayoutDashboard, label: "Dashboard", href: "/" },
-      { icon: FileText, label: "Projects", badge: "12", href: "/projects" },
+      { icon: FileText, label: "Projects", href: "/projects" },
       { icon: PenLine, label: "Editor", href: "/editor" },
-      { icon: Tag, label: "Publishing", href: "#" },
+      { icon: Tag, label: "Publishing", href: "/publishing" },
     ],
   },
   {

@@ -23,12 +23,6 @@ export interface StatItem {
 
 export type PostStatus = "Published" | "Scheduled" | "Draft";
 
-export interface Post {
-  title: string;
-  date: string;
-  status: PostStatus;
-}
-
 export interface BlogPost {
   id: string;
   title: string;
@@ -56,4 +50,3 @@ export interface Project {
   isArchived?: boolean;
   connectionStatus?: "untested" | "connected" | "failed";
 }
-

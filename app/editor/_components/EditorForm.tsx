@@ -12,8 +12,9 @@ import { toast } from "sonner";
 import { Save, Eye, FileText } from "lucide-react";
 import EditorToolbar from "./EditorToolbar";
 import EditorSidebar from "./EditorSidebar";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { projectsQueryOptions } from "@/lib/api/projects";
+import { createPost, postKeys, updatePost } from "@/lib/api/posts";
 
 function slugify(str: string): string {
   return str
@@ -25,6 +26,7 @@ function slugify(str: string): string {
 }
 
 export default function EditorForm() {
+  const queryClient = useQueryClient();
   const [title, setTitle] = useState("");
   const [slug, setSlug] = useState("");
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
@@ -35,10 +37,26 @@ export default function EditorForm() {
   const [selectedProjectId, setSelectedProjectId] = useState("none");
   const [seoTitle, setSeoTitle] = useState("");
   const [seoDescription, setSeoDescription] = useState("");
+  const [savedPostId, setSavedPostId] = useState<string | null>(null);
 
   const { data: projects = [] } = useQuery(projectsQueryOptions());
   const [isSaving, setIsSaving] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+
+  const createPostMutation = useMutation({
+    mutationFn: createPost,
+    onSuccess: (post) => {
+      setSavedPostId(post.id);
+      queryClient.invalidateQueries({ queryKey: postKeys.all });
+    },
+  });
+
+  const updatePostMutation = useMutation({
+    mutationFn: updatePost,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: postKeys.all });
+    },
+  });
 
   const editor = useEditor({
     extensions: [
@@ -67,10 +85,45 @@ export default function EditorForm() {
         toast.error("Please add a title before saving.");
         return;
       }
+      if (!editor) {
+        toast.error("Editor is still loading. Try again in a moment.");
+        return;
+      }
       setIsSaving(true);
       const effectiveStatus = saveStatus ?? status;
-      await new Promise((r) => setTimeout(r, 600));
-      setIsSaving(false);
+      const content = editor.getHTML();
+      const plainText = editor.getText().trim();
+      const postPayload = {
+        title,
+        slug: slug || slugify(title),
+        excerpt: plainText.slice(0, 220),
+        content,
+        status: effectiveStatus,
+        publishDate:
+          effectiveStatus === "Published"
+            ? new Date().toISOString()
+            : publishDate,
+        tags,
+        featuredImageUrl,
+        projectId: selectedProjectId === "none" ? "" : selectedProjectId,
+        seoTitle,
+        seoDescription,
+      };
+
+      try {
+        if (savedPostId) {
+          await updatePostMutation.mutateAsync({
+            id: savedPostId,
+            updates: postPayload,
+          });
+        } else {
+          await createPostMutation.mutateAsync(postPayload);
+        }
+      } catch (error) {
+        toast.error(error instanceof Error ? error.message : "Could not save post.");
+        setIsSaving(false);
+        return;
+      }
 
       const messages: Record<string, string> = {
         Draft: `Draft "${title}" saved.`,
@@ -79,8 +132,23 @@ export default function EditorForm() {
       };
       toast.success(messages[effectiveStatus] ?? "Saved.");
       if (saveStatus) setStatus(saveStatus);
+      setIsSaving(false);
     },
-    [title, status]
+    [
+      createPostMutation,
+      editor,
+      featuredImageUrl,
+      publishDate,
+      savedPostId,
+      selectedProjectId,
+      seoDescription,
+      seoTitle,
+      slug,
+      status,
+      tags,
+      title,
+      updatePostMutation,
+    ]
   );
 
   return (
@@ -156,6 +224,17 @@ export default function EditorForm() {
             >
               <Save size={13} />
               Save draft
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-xs text-xs text-body hover:text-ink"
+              onClick={() => handleSave(status)}
+              disabled={isSaving}
+            >
+              <Save size={13} />
+              Save {status.toLowerCase()}
             </Button>
             <Button
               type="button"
