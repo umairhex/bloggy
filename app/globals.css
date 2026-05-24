@@ -1,26 +1,342 @@
+/**
+ * Tailwind CSS v4 Configuration
+ * 
+ * In Tailwind v4, all configuration is handled via CSS using the @theme directive.
+ * This file serves as the single source of truth for the entire design system.
+ * 
+ * Structure:
+ * - :root: CSS custom properties for use in custom CSS
+ * - @theme inline: Theme variables that drive Tailwind utility generation
+ * - @layer utilities: Custom utility classes
+ */
+
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Airbnb Brand Colors */
+  --primary: #ff385c;
+  --primary-active: #e00b41;
+  --primary-disabled: #ffd1da;
+  --primary-error-text: #c13515;
+  --primary-error-text-hover: #b32505;
+  --luxe: #460479;
+  --plus: #92174d;
+  
+  /* Text Colors */
+  --ink: #222222;
+  --body: #3f3f3f;
+  --muted: #6a6a6a;
+  --muted-soft: #929292;
+  
+  /* Surface Colors */
+  --canvas: #ffffff;
+  --surface-soft: #f7f7f7;
+  --surface-strong: #f2f2f2;
+  --surface-card: #ffffff;
+  
+  /* Borders */
+  --hairline: #dddddd;
+  --hairline-soft: #ebebeb;
+  --border-strong: #c1c1c1;
+  
+  /* Semantic */
+  --on-primary: #ffffff;
+  --on-dark: #ffffff;
+  --legal-link: #428bff;
+  --star-rating: #222222;
+  --scrim: #000000;
+  
+  /* Mapped to shadcn tokens for compatibility */
+  --background: var(--canvas);
+  --foreground: var(--ink);
+  --card: var(--surface-card);
+  --card-foreground: var(--ink);
+  --popover: var(--canvas);
+  --popover-foreground: var(--ink);
+  --primary-foreground: var(--on-primary);
+  --secondary: var(--surface-soft);
+  --secondary-foreground: var(--ink);
+  --muted-foreground: var(--body);
+  --accent: var(--primary);
+  --accent-foreground: var(--on-primary);
+  --destructive: var(--primary-error-text);
+  --destructive-foreground: var(--on-primary);
+  --border: var(--hairline);
+  --input: var(--surface-strong);
+  --ring: var(--primary);
+  /* Typography */
+  --font-display: "Airbnb Cereal VF", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
+  --font-sans: "Airbnb Cereal VF", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
+  --font-serif: Georgia, serif;
+  --font-mono: Menlo, Monaco, "Courier New", monospace;
+  
+  /* Shadow System - Single tier */
+  --shadow-base: rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0;
+  
+  /* Spacing tokens (8px base unit) */
+  --spacing-xxs: 2px;
+  --spacing-xs: 4px;
+  --spacing-sm: 8px;
+  --spacing-md: 12px;
+  --spacing-base: 16px;
+  --spacing-lg: 24px;
+  --spacing-xl: 32px;
+  --spacing-xxl: 48px;
+  --spacing-section: 64px;
+  
+  /* Border radius */
+  --radius-none: 0px;
+  --radius-xs: 4px;
+  --radius-sm: 8px;
+  --radius-md: 14px;
+  --radius-lg: 20px;
+  --radius-xl: 32px;
+  --radius-full: 9999px;
 }
 
 @theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  /* Colors - Airbnb Palette */
+  --color-primary: var(--primary);
+  --color-primary-active: var(--primary-active);
+  --color-primary-disabled: var(--primary-disabled);
+  --color-primary-error-text: var(--primary-error-text);
+  --color-primary-error-text-hover: var(--primary-error-text-hover);
+  --color-luxe: var(--luxe);
+  --color-plus: var(--plus);
+  --color-ink: var(--ink);
+  --color-body: var(--body);
+  --color-muted: var(--muted);
+  --color-muted-soft: var(--muted-soft);
+  --color-canvas: var(--canvas);
+  --color-surface-soft: var(--surface-soft);
+  --color-surface-strong: var(--surface-strong);
+  --color-surface-card: var(--surface-card);
+  --color-hairline: var(--hairline);
+  --color-hairline-soft: var(--hairline-soft);
+  --color-border-strong: var(--border-strong);
+  --color-on-primary: var(--on-primary);
+  --color-on-dark: var(--on-dark);
+  --color-legal-link: var(--legal-link);
+  --color-star-rating: var(--star-rating);
+  --color-scrim: var(--scrim);
+  
+  /* Font Families */
+  --font-display: var(--font-display);
+  --font-sans: var(--font-sans);
+  --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
+  
+  /* Font Weights - Airbnb Cereal VF Scale */
+  --font-weight-thin: 100;
+  --font-weight-extralight: 200;
+  --font-weight-light: 300;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-semibold: 600;
+  --font-weight-bold: 700;
+  --font-weight-extrabold: 800;
+  --font-weight-black: 900;
+  
+  /* Text Sizes - Airbnb Typography Scale */
+  --text-xs: 0.75rem; /* 12px */
+  --text-sm: 0.875rem; /* 14px */
+  --text-base: 1rem; /* 16px */
+  --text-lg: 1.125rem; /* 18px */
+  --text-xl: 1.25rem; /* 20px */
+  --text-2xl: 1.375rem; /* 22px */
+  --text-3xl: 1.5rem; /* 24px */
+  --text-4xl: 1.75rem; /* 28px */
+  --text-5xl: 2rem; /* 32px */
+  --text-6xl: 3.75rem; /* 60px */
+  --text-7xl: 4rem; /* 64px */
+  
+  /* Letter Spacing (Tracking) */
+  --tracking-tighter: -0.05em;
+  --tracking-tight: -0.025em;
+  --tracking-normal: 0em;
+  --tracking-wide: 0.025em;
+  --tracking-wider: 0.05em;
+  --tracking-widest: 0.1em;
+  
+  /* Line Heights */
+  --leading-tight: 1.1;
+  --leading-snug: 1.18;
+  --leading-normal: 1.25;
+  --leading-relaxed: 1.29;
+  --leading-loose: 1.43;
+  --leading-roomier: 1.5;
+  
+  /* Spacing - 8px Base Unit System */
+  --spacing-xxs: var(--spacing-xxs);
+  --spacing-xs: var(--spacing-xs);
+  --spacing-sm: var(--spacing-sm);
+  --spacing-md: var(--spacing-md);
+  --spacing-base: var(--spacing-base);
+  --spacing-lg: var(--spacing-lg);
+  --spacing-xl: var(--spacing-xl);
+  --spacing-xxl: var(--spacing-xxl);
+  --spacing-section: var(--spacing-section);
+  
+  /* Border Radius - Soft Shape Language */
+  --radius-none: var(--radius-none);
+  --radius-xs: var(--radius-xs);
+  --radius-sm: var(--radius-sm);
+  --radius-md: var(--radius-md);
+  --radius-lg: var(--radius-lg);
+  --radius-xl: var(--radius-xl);
+  --radius-full: var(--radius-full);
+  
+  /* Shadows - Single Elevation Tier */
+  --shadow-base: var(--shadow-base);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+/* Airbnb Design System - Light Mode Only (No Dark Mode) */
+html {
+  font-family: var(--font-sans);
 }
 
 body {
-  background: var(--background);
+  background-color: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Global utility classes based on Airbnb design system */
+
+@layer utilities {
+  /* Shadow utility - single tier elevation */
+  .shadow-airbnb {
+    box-shadow: var(--shadow-base);
+  }
+  
+  /* Typography utilities */
+  .text-display-xl {
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 1.43;
+  }
+  
+  .text-display-lg {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.18;
+    letter-spacing: -0.44px;
+  }
+  
+  .text-display-md {
+    font-size: 21px;
+    font-weight: 700;
+    line-height: 1.43;
+  }
+  
+  .text-display-sm {
+    font-size: 20px;
+    font-weight: 600;
+    line-height: 1.20;
+    letter-spacing: -0.18px;
+  }
+  
+  .text-title-md {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+  }
+  
+  .text-title-sm {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  
+  .text-body-md {
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 1.5;
+  }
+  
+  .text-body-sm {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.43;
+  }
+  
+  .text-caption {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.29;
+  }
+  
+  .text-caption-sm {
+    font-size: 13px;
+    font-weight: 400;
+    line-height: 1.23;
+  }
+  
+  .text-badge {
+    font-size: 11px;
+    font-weight: 600;
+    line-height: 1.18;
+  }
+  
+  .text-button-md {
+    font-size: 16px;
+    font-weight: 500;
+    line-height: 1.25;
+  }
+  
+  .text-button-sm {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.29;
+  }
+  
+  .text-link {
+    font-size: 14px;
+    font-weight: 400;
+    line-height: 1.43;
+  }
+  
+  .text-nav-link {
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 1.25;
+    letter-spacing: 0;
+  }
+  
+  .text-rating-display {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.1;
+    letter-spacing: -1px;
+  }
+  
+  .text-micro-label {
+    font-size: 12px;
+    font-weight: 700;
+    line-height: 1.33;
+    letter-spacing: 0;
+  }
+  
+  .text-uppercase-tag {
+    font-size: 8px;
+    font-weight: 700;
+    line-height: 1.25;
+    letter-spacing: 0.32px;
+    text-transform: uppercase;
+  }
+  
+  /* Responsive container - max-width for major page sections */
+  .container-content {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
+  .container-listing {
+    max-width: 1080px;
+    margin-left: auto;
+    margin-right: auto;
+  }
 }
