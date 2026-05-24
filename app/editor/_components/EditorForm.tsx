@@ -121,7 +121,7 @@ export default function EditorForm() {
                 setSlugManuallyEdited(true);
               }}
               placeholder="post-slug"
-              className="flex-1 text-xs text-body bg-transparent border-none outline-none font-mono border-b border-transparent hover:border-hairline focus:border-primary transition-colors pb-xs"
+              className="flex-1 text-xs text-body bg-transparent border-none outline-none font-mono border-b border-transparent hover:border-hairline focus:border-primary transition-colors "
             />
             {slugManuallyEdited && (
               <button

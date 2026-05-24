@@ -204,7 +204,7 @@ export default function EditorSidebar({
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
                 placeholder={tags.length === 0 ? "Type a tag, press Enter…" : "Add more…"}
-                className="flex-1 min-w-16 text-xs bg-transparent outline-none text-ink placeholder:text-muted-soft"
+                className="px-3 flex-1 min-w-16 text-xs bg-transparent outline-none text-ink placeholder:text-muted-soft"
               />
             </div>
             <p className="text-[10px] text-muted">Press Enter or comma to add</p>
@@ -270,7 +270,7 @@ export default function EditorSidebar({
               value={seoDescription}
               onChange={(e) => setSeoDescription(e.target.value)}
               placeholder="Brief description for search engines…"
-              className="text-xs bg-canvas border-hairline resize-none h-20"
+              className="text-xs bg-canvas border-hairline resize-none h-20 px-3"
               maxLength={160}
             />
             <p className="text-[10px] text-muted text-right">{seoDescription.length}/160</p>

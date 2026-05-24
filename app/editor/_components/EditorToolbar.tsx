@@ -19,11 +19,6 @@ import {
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
 
 interface EditorToolbarProps {
   editor: Editor | null;
@@ -137,28 +132,21 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
           )}
           <div className="flex items-center gap-xs">
             {group.map((btn) => (
-              <Tooltip key={btn.label}>
-                <TooltipTrigger asChild>
-                  <Button
-                    type="button"
-                    variant="ghost"
-                    size="icon"
-                    className={`h-7 w-7 rounded-sm transition-colors ${
-                      btn.isActive
-                        ? "bg-primary text-on-primary hover:bg-primary-active"
-                        : "text-body hover:text-ink hover:bg-hairline"
-                    }`}
-                    onClick={btn.action}
-                    disabled={btn.disabled}
-                    aria-label={btn.label}
-                  >
-                    {btn.icon}
-                  </Button>
-                </TooltipTrigger>
-                <TooltipContent side="bottom" className="text-xs">
-                  {btn.label}
-                </TooltipContent>
-              </Tooltip>
+              <Button
+                key={btn.label}
+                type="button"
+                variant="ghost"
+                size="icon"
+                className={`h-7 w-7 rounded-sm transition-colors ${btn.isActive
+                  ? "bg-primary text-on-primary hover:bg-primary-active"
+                  : "text-body hover:text-ink hover:bg-hairline cursor-pointer"
+                  }`}
+                onClick={btn.action}
+                disabled={btn.disabled}
+                aria-label={btn.label}
+              >
+                {btn.icon}
+              </Button>
             ))}
           </div>
         </React.Fragment>

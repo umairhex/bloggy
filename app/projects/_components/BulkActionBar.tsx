@@ -50,7 +50,7 @@ export default function BulkActionBar({
         <span className="bg-primary text-on-primary h-6 w-6 rounded-full flex items-center justify-center text-xs font-semibold">
           {selectedCount}
         </span>
-        <span className="text-sm font-medium">projects selected</span>
+        <span className="text-sm font-medium">Projects selected</span>
       </div>
 
       <div className="h-6 w-px bg-hairline" />
@@ -81,14 +81,14 @@ export default function BulkActionBar({
             </Button>
             <Button
               type="button"
-              variant="ghost"
-              className="h-8 w-8 p-0 rounded-full hover:bg-hairline/50 text-ink"
+              variant="outline"
+              className="h-8 w-8 p-0 rounded-full hover:bg-hairline/50 text-ink cursor-pointer"
               onClick={() => {
                 setShowBulkEditForm(false);
                 setError("");
               }}
             >
-              <X size={14} />
+              X
             </Button>
           </form>
         ) : (
@@ -116,12 +116,12 @@ export default function BulkActionBar({
           <>
             <div className="h-6 w-px bg-hairline" />
             <Button
-              variant="ghost"
+              variant="outline"
               className="h-8 w-8 p-0 rounded-full text-muted hover:text-ink hover:bg-hairline/50 cursor-pointer"
               onClick={onClearSelection}
               title="Clear Selection"
             >
-              <X size={16} />
+              X
             </Button>
           </>
         )}
