@@ -9,12 +9,10 @@ export default function Page() {
   return (
     <DashboardShell>
       <main className="p-lg space-y-lg">
-        {/* Stats Grid - Streamed independently */}
         <Suspense fallback={<StatsGridSkeleton />}>
           <StatsGrid />
         </Suspense>
 
-        {/* Posts list - Streamed independently */}
         <Suspense fallback={<RecentPostsSkeleton />}>
           <RecentPosts />
         </Suspense>

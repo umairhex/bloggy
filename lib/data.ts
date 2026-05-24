@@ -1,7 +1,7 @@
 import { StatItem, Post } from "@/types";
 
 export async function getStats(): Promise<StatItem[]> {
-  // Simulate network delay
+
   await new Promise((resolve) => setTimeout(resolve, 500));
 
   return [
@@ -13,7 +13,7 @@ export async function getStats(): Promise<StatItem[]> {
 }
 
 export async function getPosts(): Promise<Post[]> {
-  // Simulate network delay
+
   await new Promise((resolve) => setTimeout(resolve, 800));
 
   return [

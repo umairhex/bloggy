@@ -6,7 +6,9 @@ export interface NavLink {
   label: string;
   active?: boolean;
   badge?: string;
+  href?: string;
 }
+
 
 export interface NavSection {
   label: string;
@@ -26,3 +28,15 @@ export interface Post {
   date: string;
   status: PostStatus;
 }
+
+export interface Project {
+  id: string;
+  name: string;
+  description?: string;
+  mongodbUri: string;
+  createdAt: string;
+  category?: "production" | "staging" | "development";
+  isArchived?: boolean;
+  connectionStatus?: "untested" | "connected" | "failed";
+}
+

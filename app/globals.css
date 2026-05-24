@@ -1,15 +1,3 @@
-/**
- * Tailwind CSS v4 Configuration
- * 
- * In Tailwind v4, all configuration is handled via CSS using the @theme directive.
- * This file serves as the single source of truth for the entire design system.
- * 
- * Structure:
- * - :root: CSS custom properties for use in custom CSS
- * - @theme inline: Theme variables that drive Tailwind utility generation
- * - @layer utilities: Custom utility classes
- */
-
 @import "tailwindcss";
 
 :root {
@@ -21,31 +9,31 @@
   --primary-error-text-hover: #b32505;
   --luxe: #460479;
   --plus: #92174d;
-  
+
   /* Text Colors */
   --ink: #222222;
   --body: #3f3f3f;
   --muted: #6a6a6a;
   --muted-soft: #929292;
-  
+
   /* Surface Colors */
   --canvas: #ffffff;
   --surface-soft: #f7f7f7;
   --surface-strong: #f2f2f2;
   --surface-card: #ffffff;
-  
+
   /* Borders */
   --hairline: #dddddd;
   --hairline-soft: #ebebeb;
   --border-strong: #c1c1c1;
-  
+
   /* Semantic */
   --on-primary: #ffffff;
   --on-dark: #ffffff;
   --legal-link: #428bff;
   --star-rating: #222222;
   --scrim: #000000;
-  
+
   /* Mapped to shadcn tokens for compatibility */
   --background: var(--canvas);
   --foreground: var(--ink);
@@ -69,10 +57,10 @@
   --font-sans: "Airbnb Cereal VF", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
   --font-serif: Georgia, serif;
   --font-mono: Menlo, Monaco, "Courier New", monospace;
-  
+
   /* Shadow System - Single tier */
   --shadow-base: rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0;
-  
+
   /* Spacing tokens (8px base unit) */
   --spacing-xxs: 2px;
   --spacing-xs: 4px;
@@ -83,7 +71,7 @@
   --spacing-xl: 32px;
   --spacing-xxl: 48px;
   --spacing-section: 64px;
-  
+
   /* Border radius */
   --radius-none: 0px;
   --radius-xs: 4px;
@@ -119,13 +107,13 @@
   --color-legal-link: var(--legal-link);
   --color-star-rating: var(--star-rating);
   --color-scrim: var(--scrim);
-  
+
   /* Font Families */
   --font-display: var(--font-display);
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
   --font-mono: var(--font-mono);
-  
+
   /* Font Weights - Airbnb Cereal VF Scale */
   --font-weight-thin: 100;
   --font-weight-extralight: 200;
@@ -136,20 +124,31 @@
   --font-weight-bold: 700;
   --font-weight-extrabold: 800;
   --font-weight-black: 900;
-  
+
   /* Text Sizes - Airbnb Typography Scale */
-  --text-xs: 0.75rem; /* 12px */
-  --text-sm: 0.875rem; /* 14px */
-  --text-base: 1rem; /* 16px */
-  --text-lg: 1.125rem; /* 18px */
-  --text-xl: 1.25rem; /* 20px */
-  --text-2xl: 1.375rem; /* 22px */
-  --text-3xl: 1.5rem; /* 24px */
-  --text-4xl: 1.75rem; /* 28px */
-  --text-5xl: 2rem; /* 32px */
-  --text-6xl: 3.75rem; /* 60px */
-  --text-7xl: 4rem; /* 64px */
-  
+  --text-xs: 0.75rem;
+  /* 12px */
+  --text-sm: 0.875rem;
+  /* 14px */
+  --text-base: 1rem;
+  /* 16px */
+  --text-lg: 1.125rem;
+  /* 18px */
+  --text-xl: 1.25rem;
+  /* 20px */
+  --text-2xl: 1.375rem;
+  /* 22px */
+  --text-3xl: 1.5rem;
+  /* 24px */
+  --text-4xl: 1.75rem;
+  /* 28px */
+  --text-5xl: 2rem;
+  /* 32px */
+  --text-6xl: 3.75rem;
+  /* 60px */
+  --text-7xl: 4rem;
+  /* 64px */
+
   /* Letter Spacing (Tracking) */
   --tracking-tighter: -0.05em;
   --tracking-tight: -0.025em;
@@ -157,7 +156,7 @@
   --tracking-wide: 0.025em;
   --tracking-wider: 0.05em;
   --tracking-widest: 0.1em;
-  
+
   /* Line Heights */
   --leading-tight: 1.1;
   --leading-snug: 1.18;
@@ -165,7 +164,7 @@
   --leading-relaxed: 1.29;
   --leading-loose: 1.43;
   --leading-roomier: 1.5;
-  
+
   /* Spacing - 8px Base Unit System */
   --spacing-xxs: var(--spacing-xxs);
   --spacing-xs: var(--spacing-xs);
@@ -176,7 +175,7 @@
   --spacing-xl: var(--spacing-xl);
   --spacing-xxl: var(--spacing-xxl);
   --spacing-section: var(--spacing-section);
-  
+
   /* Border Radius - Soft Shape Language */
   --radius-none: var(--radius-none);
   --radius-xs: var(--radius-xs);
@@ -185,9 +184,35 @@
   --radius-lg: var(--radius-lg);
   --radius-xl: var(--radius-xl);
   --radius-full: var(--radius-full);
-  
+
   /* Shadows - Single Elevation Tier */
   --shadow-base: var(--shadow-base);
+
+  /* Animations & Keyframes */
+  --animate-slide-up: slide-up 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+  --animate-fade-in: fade-in 0.2s ease-out;
+
+  @keyframes slide-up {
+    from {
+      transform: translate(-50%, 100%);
+      opacity: 0;
+    }
+
+    to {
+      transform: translate(-50%, 0);
+      opacity: 1;
+    }
+  }
+
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+    }
+
+    to {
+      opacity: 1;
+    }
+  }
 }
 
 /* Airbnb Design System - Light Mode Only (No Dark Mode) */
@@ -206,119 +231,120 @@ body {
 /* Global utility classes based on Airbnb design system */
 
 @layer utilities {
+
   /* Shadow utility - single tier elevation */
   .shadow-airbnb {
     box-shadow: var(--shadow-base);
   }
-  
+
   /* Typography utilities */
   .text-display-xl {
     font-size: 28px;
     font-weight: 700;
     line-height: 1.43;
   }
-  
+
   .text-display-lg {
     font-size: 22px;
     font-weight: 500;
     line-height: 1.18;
     letter-spacing: -0.44px;
   }
-  
+
   .text-display-md {
     font-size: 21px;
     font-weight: 700;
     line-height: 1.43;
   }
-  
+
   .text-display-sm {
     font-size: 20px;
     font-weight: 600;
     line-height: 1.20;
     letter-spacing: -0.18px;
   }
-  
+
   .text-title-md {
     font-size: 16px;
     font-weight: 600;
     line-height: 1.25;
   }
-  
+
   .text-title-sm {
     font-size: 16px;
     font-weight: 500;
     line-height: 1.25;
   }
-  
+
   .text-body-md {
     font-size: 16px;
     font-weight: 400;
     line-height: 1.5;
   }
-  
+
   .text-body-sm {
     font-size: 14px;
     font-weight: 400;
     line-height: 1.43;
   }
-  
+
   .text-caption {
     font-size: 14px;
     font-weight: 500;
     line-height: 1.29;
   }
-  
+
   .text-caption-sm {
     font-size: 13px;
     font-weight: 400;
     line-height: 1.23;
   }
-  
+
   .text-badge {
     font-size: 11px;
     font-weight: 600;
     line-height: 1.18;
   }
-  
+
   .text-button-md {
     font-size: 16px;
     font-weight: 500;
     line-height: 1.25;
   }
-  
+
   .text-button-sm {
     font-size: 14px;
     font-weight: 500;
     line-height: 1.29;
   }
-  
+
   .text-link {
     font-size: 14px;
     font-weight: 400;
     line-height: 1.43;
   }
-  
+
   .text-nav-link {
     font-size: 16px;
     font-weight: 600;
     line-height: 1.25;
     letter-spacing: 0;
   }
-  
+
   .text-rating-display {
     font-size: 64px;
     font-weight: 700;
     line-height: 1.1;
     letter-spacing: -1px;
   }
-  
+
   .text-micro-label {
     font-size: 12px;
     font-weight: 700;
     line-height: 1.33;
     letter-spacing: 0;
   }
-  
+
   .text-uppercase-tag {
     font-size: 8px;
     font-weight: 700;
@@ -326,14 +352,14 @@ body {
     letter-spacing: 0.32px;
     text-transform: uppercase;
   }
-  
+
   /* Responsive container - max-width for major page sections */
   .container-content {
     max-width: 1280px;
     margin-left: auto;
     margin-right: auto;
   }
-  
+
   .container-listing {
     max-width: 1080px;
     margin-left: auto;
