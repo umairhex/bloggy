@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Trash2, Edit, X } from "lucide-react";
+import { motion } from "motion/react";
 
 interface BulkActionBarProps {
   selectedCount: number;
@@ -21,8 +22,6 @@ export default function BulkActionBar({
   const [bulkUri, setBulkUri] = useState("");
   const [error, setError] = useState("");
 
-  if (selectedCount === 0) return null;
-
   const handleBulkUpdateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!bulkUri.trim()) {
@@ -40,7 +39,13 @@ export default function BulkActionBar({
   };
 
   return (
-    <div className="fixed bottom-lg left-1/2 -translate-x-1/2 z-40 bg-ink text-on-dark rounded-full px-lg py-sm shadow-airbnb flex items-center gap-lg transition-all duration-300 animate-slide-up border border-border-strong/10">
+    <motion.div
+      initial={{ y: 80, x: "-50%", opacity: 0 }}
+      animate={{ y: 0, x: "-50%", opacity: 1 }}
+      exit={{ y: 80, x: "-50%", opacity: 0 }}
+      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+      className="fixed bottom-lg left-1/2 z-40 bg-surface-card text-ink rounded-full px-lg py-sm shadow-airbnb flex items-center gap-lg border border-hairline"
+    >
       <div className="flex items-center gap-md">
         <span className="bg-primary text-on-primary h-6 w-6 rounded-full flex items-center justify-center text-xs font-semibold">
           {selectedCount}
@@ -48,7 +53,7 @@ export default function BulkActionBar({
         <span className="text-sm font-medium">projects selected</span>
       </div>
 
-      <div className="h-6 w-px bg-hairline/25" />
+      <div className="h-6 w-px bg-hairline" />
 
       <div className="flex items-center gap-md">
         {showBulkEditForm ? (
@@ -77,7 +82,7 @@ export default function BulkActionBar({
             <Button
               type="button"
               variant="ghost"
-              className="h-8 w-8 p-0 rounded-full hover:bg-hairline/20 text-on-dark"
+              className="h-8 w-8 p-0 rounded-full hover:bg-hairline/50 text-ink"
               onClick={() => {
                 setShowBulkEditForm(false);
                 setError("");
@@ -90,7 +95,7 @@ export default function BulkActionBar({
           <>
             <Button
               variant="ghost"
-              className="h-9 gap-sm text-sm font-semibold hover:bg-hairline/15 text-on-dark rounded-full px-md cursor-pointer"
+              className="h-9 gap-sm text-sm font-semibold hover:bg-hairline/50 text-ink rounded-full px-md cursor-pointer"
               onClick={() => setShowBulkEditForm(true)}
             >
               <Edit size={14} className="text-primary" />
@@ -109,10 +114,10 @@ export default function BulkActionBar({
 
         {!showBulkEditForm && (
           <>
-            <div className="h-6 w-px bg-hairline/25" />
+            <div className="h-6 w-px bg-hairline" />
             <Button
               variant="ghost"
-              className="h-8 w-8 p-0 rounded-full text-white/50 hover:text-white hover:bg-white/10 cursor-pointer"
+              className="h-8 w-8 p-0 rounded-full text-muted hover:text-ink hover:bg-hairline/50 cursor-pointer"
               onClick={onClearSelection}
               title="Clear Selection"
             >
@@ -121,6 +126,6 @@ export default function BulkActionBar({
           </>
         )}
       </div>
-    </div>
+    </motion.div>
   );
 }

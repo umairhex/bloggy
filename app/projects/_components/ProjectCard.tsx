@@ -4,6 +4,7 @@ import React, { useState } from "react";
 import { Project } from "@/types";
 import { Database, Eye, EyeOff, Copy, Check, Edit3, Trash2, RefreshCw, Archive } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
 
 interface ProjectCardProps {
   project: Project;
@@ -12,7 +13,6 @@ interface ProjectCardProps {
   onEdit: (project: Project) => void;
   onDelete: (id: string) => void;
   onUpdateProject: (id: string, updates: Partial<Project>) => void;
-  onCopySuccess?: (message: string) => void;
 }
 
 export default function ProjectCard({
@@ -22,7 +22,6 @@ export default function ProjectCard({
   onEdit,
   onDelete,
   onUpdateProject,
-  onCopySuccess,
 }: ProjectCardProps) {
   const [revealUri, setRevealUri] = useState(false);
   const [copied, setCopied] = useState(false);
@@ -34,11 +33,10 @@ export default function ProjectCard({
       await navigator.clipboard.writeText(project.mongodbUri);
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
-      if (onCopySuccess) {
-        onCopySuccess("Copied connection string to clipboard!");
-      }
+      toast.success("Copied connection string to clipboard!");
     } catch (err) {
       console.error("Failed to copy text: ", err);
+      toast.error("Failed to copy to clipboard.");
     }
   };
 
@@ -66,12 +64,10 @@ export default function ProjectCard({
     const newStatus = isSuccess ? "connected" : "failed";
     onUpdateProject(project.id, { connectionStatus: newStatus });
 
-    if (onCopySuccess) {
-      onCopySuccess(
-        isSuccess
-          ? `Verified! Connection to "${project.name}" is working.`
-          : `Failed: Could not reach cluster for "${project.name}".`
-      );
+    if (isSuccess) {
+      toast.success(`Verified! Connection to "${project.name}" is working.`);
+    } else {
+      toast.error(`Failed: Could not reach cluster for "${project.name}".`);
     }
   };
 
@@ -85,12 +81,10 @@ export default function ProjectCard({
       onToggleSelect(project.id);
     }
 
-    if (onCopySuccess) {
-      onCopySuccess(
-        nextArchivedState
-          ? `Archived project "${project.name}".`
-          : `Restored project "${project.name}" to workspace.`
-      );
+    if (nextArchivedState) {
+      toast.success(`Archived project "${project.name}".`);
+    } else {
+      toast.success(`Restored project "${project.name}" to workspace.`);
     }
   };
 

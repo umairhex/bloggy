@@ -13,6 +13,8 @@ import {
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
 
+import { AnimatePresence } from "motion/react";
+import { toast } from "sonner";
 import ProjectCard from "./ProjectCard";
 import ProjectFormModal from "./ProjectFormModal";
 import BulkActionBar from "./BulkActionBar";
@@ -27,23 +29,6 @@ export default function ProjectsManager() {
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
   const [sortBy, setSortBy] = useState("newest");
-  const [toast, setToast] = useState<{ show: boolean; message: string }>({
-    show: false,
-    message: "",
-  });
-
-  const triggerToast = (message: string) => {
-    setToast({ show: true, message });
-  };
-
-  useEffect(() => {
-    if (toast.show) {
-      const timer = setTimeout(() => {
-        setToast({ show: false, message: "" });
-      }, 3000);
-      return () => clearTimeout(timer);
-    }
-  }, [toast.show]);
 
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,7 +117,7 @@ export default function ProjectsManager() {
       );
       saveProjects(updated);
       setEditingProject(null);
-      triggerToast(`Updated project "${data.name}" details.`);
+      toast.success(`Updated project "${data.name}" details.`);
     } else {
 
       const newProj: Project = {
@@ -150,7 +135,7 @@ export default function ProjectsManager() {
         }),
       };
       saveProjects([newProj, ...projects]);
-      triggerToast(`Added project "${data.name}" to workspace.`);
+      toast.success(`Added project "${data.name}" to workspace.`);
     }
   };
 
@@ -167,7 +152,7 @@ export default function ProjectsManager() {
         const updated = projects.filter((p) => p.id !== id);
         saveProjects(updated);
         setSelectedIds((prev) => prev.filter((item) => item !== id));
-        triggerToast(`Deleted project "${projectToDelete?.name || "Project"}".`);
+        toast.success(`Deleted project "${projectToDelete?.name || "Project"}".`);
       },
     });
   };
@@ -185,7 +170,7 @@ export default function ProjectsManager() {
         const updated = projects.filter((p) => !selectedIds.includes(p.id));
         saveProjects(updated);
         setSelectedIds([]);
-        triggerToast(`Permanently deleted ${count} projects.`);
+        toast.success(`Permanently deleted ${count} projects.`);
       },
     });
   };
@@ -200,7 +185,7 @@ export default function ProjectsManager() {
     const count = selectedIds.length;
     setSelectedIds([]);
 
-    triggerToast(`Bulk updated connection string for ${count} projects.`);
+    toast.success(`Bulk updated connection string for ${count} projects.`);
 
 
     setAlertDialog({
@@ -292,7 +277,6 @@ export default function ProjectsManager() {
               }}
               onDelete={handleDeleteProject}
               onUpdateProject={handleUpdateProject}
-              onCopySuccess={triggerToast}
             />
           ))}
         </div>
@@ -309,12 +293,16 @@ export default function ProjectsManager() {
         />
       )}
 
-      <BulkActionBar
-        selectedCount={selectedIds.length}
-        onBulkDelete={handleBulkDelete}
-        onBulkUpdate={handleBulkUpdate}
-        onClearSelection={handleClearSelection}
-      />
+      <AnimatePresence>
+        {selectedIds.length > 0 && (
+          <BulkActionBar
+            selectedCount={selectedIds.length}
+            onBulkDelete={handleBulkDelete}
+            onBulkUpdate={handleBulkUpdate}
+            onClearSelection={handleClearSelection}
+          />
+        )}
+      </AnimatePresence>
 
       <ProjectFormModal
         key={editingProject ? `edit-${editingProject.id}` : "create"}
@@ -326,18 +314,6 @@ export default function ProjectsManager() {
         onSubmit={handleModalSubmit}
         project={editingProject}
       />
-
-      {toast.show && (
-        <div className="fixed bottom-6 right-6 z-50 bg-ink text-canvas text-xs font-semibold px-md py-sm rounded-sm shadow-airbnb animate-slide-up flex items-center gap-sm border border-hairline-soft">
-          <span>{toast.message}</span>
-          <button
-            onClick={() => setToast({ show: false, message: "" })}
-            className="text-white/60 hover:text-white cursor-pointer ml-xs font-bold"
-          >
-            ✕
-          </button>
-        </div>
-      )}
 
       <AlertDialog
         open={alertDialog.isOpen}

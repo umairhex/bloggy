@@ -1,5 +1,7 @@
 @import "tailwindcss";
 
+@custom-variant dark (&:where(.dark, .dark *));
+
 :root {
   /* Airbnb Brand Colors */
   --primary: #ff385c;
@@ -80,6 +82,44 @@
   --radius-lg: 20px;
   --radius-xl: 32px;
   --radius-full: 9999px;
+}
+
+.dark {
+  /* Airbnb Brand Colors - Dark Adaptations */
+  --primary: #ff385c;
+  --primary-active: #ff4f70;
+  --primary-disabled: #4c1722;
+  --primary-error-text: #ff5a5f;
+  --primary-error-text-hover: #ff7e82;
+  --luxe: #ab47bc;
+  --plus: #ec407a;
+
+  /* Text Colors */
+  --ink: #f7f7f7;
+  --body: #e3e3e3;
+  --muted: #a3a3a3;
+  --muted-soft: #767676;
+
+  /* Surface Colors */
+  --canvas: #0c0c0e;
+  --surface-soft: #161619;
+  --surface-strong: #222226;
+  --surface-card: #18181c;
+
+  /* Borders */
+  --hairline: #222225;
+  --hairline-soft: #1b1b1e;
+  --border-strong: #44444a;
+
+  /* Semantic */
+  --on-primary: #ffffff;
+  --on-dark: #ffffff;
+  --legal-link: #549dff;
+  --star-rating: var(--ink);
+  --scrim: #000000;
+
+  /* Shadows - Dark Mode Elevation */
+  --shadow-base: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.4) 0 4px 12px 0, rgba(0, 0, 0, 0.3) 0 8px 24px 0;
 }
 
 @theme inline {
