@@ -76,8 +76,8 @@ export default function EditorSidebar({
   const activeProjects = projects.filter((p) => !p.isArchived);
 
   return (
-    <ScrollArea className="max-h-[calc(100vh)]">
-      <aside className="w-72 shrink-0 border-l border-hairline bg-surface-soft flex flex-col overflow-y-auto">
+    <ScrollArea className="h-full">
+      <aside className="w-72 h-full shrink-0 border-l border-hairline bg-surface-soft flex flex-col overflow-y-auto">
 
         <section className="p-base border-b border-hairline space-y-base">
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted">Publishing</h3>
@@ -277,7 +277,7 @@ export default function EditorSidebar({
           </div>
         </section>
 
-        <div className="mt-auto p-base border-t border-hairline">
+        <div className="mt-auto p-base border-t border-hairline shrink-0">
           <Button
             type="button"
             variant="ghost"

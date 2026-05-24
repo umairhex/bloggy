@@ -9,8 +9,12 @@ export const metadata = {
 
 export default function EditorPage() {
   return (
-    <DashboardShell>
-      <div className="flex-1 flex overflow-hidden h-full">
+  <DashboardShell>
+      {/* Add flex-col and min-h-0 here. 
+        If DashboardShell doesn't provide a strict height, this container will 
+        still try to grow. 
+      */}
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0 h-full">
         <EditorForm />
       </div>
     </DashboardShell>

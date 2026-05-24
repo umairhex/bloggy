@@ -23,7 +23,8 @@ export default async function PublishingPage() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <DashboardShell>
-        <main className="p-lg space-y-lg">
+        {/* FIX: Added h-full and overflow-y-auto so the page content scrolls naturally inside the locked shell */}
+        <main className="h-full w-full overflow-y-auto p-base md:p-lg lg:p-xl">
           <PublishingManager />
         </main>
       </DashboardShell>

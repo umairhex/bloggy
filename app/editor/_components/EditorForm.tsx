@@ -153,7 +153,8 @@ export default function EditorForm() {
 
   return (
     <div className="flex flex-1 overflow-hidden h-full">
-      <div className="flex-1 flex flex-col overflow-hidden">
+      {/* FIX: Added min-h-0 to allow this column to shrink and trigger scrolling */}
+      <div className="flex-1 flex flex-col overflow-hidden min-h-0">
 
         <div className="px-xl pt-lg pb-base border-b border-hairline bg-canvas shrink-0">
           <input
@@ -202,7 +203,8 @@ export default function EditorForm() {
 
         <EditorToolbar editor={editor} />
 
-        <div className="flex-1 overflow-y-auto">
+        {/* FIX: Added min-h-0 to explicitly allow the Tiptap editor container to scroll */}
+        <div className="flex-1 overflow-y-auto min-h-0">
           <EditorContent editor={editor} className="h-full" />
         </div>
 

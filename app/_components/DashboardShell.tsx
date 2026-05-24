@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+// You can remove the ScrollArea import if it is no longer used elsewhere in this file
 import { Button } from "@/components/ui/button";
 import { Menu, X } from "lucide-react";
 
@@ -21,10 +21,11 @@ export default function DashboardShell({ children }: DashboardShellProps) {
   return (
     <div className="flex h-screen bg-canvas overflow-hidden">
       <aside
-        className={`shrink-0 border-r border-hairline bg-surface-soft flex flex-col transition-all duration-300 ease-out ${sidebarOpen ? "w-56" : "w-0"
-          } overflow-hidden`}
+        className={`shrink-0 border-r border-hairline bg-surface-soft flex flex-col transition-all duration-300 ease-out ${
+          sidebarOpen ? "w-56" : "w-0"
+        } overflow-hidden`}
       >
-        <div className="h-16 px-base border-b border-hairline flex flex-col justify-center">
+        <div className="h-16 px-base border-b border-hairline flex flex-col justify-center shrink-0">
           <p className="font-serif text-title-md font-semibold tracking-tight text-ink">
             bloggy<span className="text-primary">.</span>
           </p>
@@ -36,7 +37,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         <UserFooter />
       </aside>
 
-      <div className="flex-1 flex flex-col overflow-hidden">
+      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
         <header className="h-16 border-b border-hairline flex items-center justify-between px-lg shrink-0 bg-canvas">
           <div className="flex items-center gap-md">
             <Button
@@ -52,11 +53,20 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           <HeaderActions />
         </header>
 
-        <ScrollArea className="flex-1">
+        {/* FIX: Replaced <ScrollArea> with a strict flex container.
+          min-h-0 is crucial here so the container shrinks to the viewport, 
+          forcing the Editor component inside to manage its own overflow.
+        */}
+        <main className="flex-1 flex flex-col overflow-hidden min-h-0 relative">
           {children}
-        </ScrollArea>
+        </main>
 
-        <DashboardFooter />
+        {/* Added shrink-0 so the footer doesn't get squished if the screen 
+          height gets extremely small 
+        */}
+        <div className="shrink-0">
+          <DashboardFooter />
+        </div>
       </div>
     </div>
   );
