@@ -29,6 +29,23 @@ export interface Post {
   status: PostStatus;
 }
 
+export interface BlogPost {
+  id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  content: string;
+  status: PostStatus;
+  publishDate?: string;
+  tags: string[];
+  featuredImageUrl?: string;
+  projectId?: string;
+  seoTitle?: string;
+  seoDescription?: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
 export interface Project {
   id: string;
   name: string;

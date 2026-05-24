@@ -13,7 +13,7 @@ export const navItems: NavSection[] = [
     links: [
       { icon: LayoutDashboard, label: "Dashboard", href: "/" },
       { icon: FileText, label: "Projects", badge: "12", href: "/projects" },
-      { icon: PenLine, label: "Editor", href: "#" },
+      { icon: PenLine, label: "Editor", href: "/editor" },
       { icon: Tag, label: "Publishing", href: "#" },
     ],
   },
