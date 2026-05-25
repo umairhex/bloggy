@@ -640,7 +640,11 @@ body {
   gap: var(--spacing-xs) !important;
 }
 
-.driver-popover.driverjs-theme .driver-popover-btn {
+.driver-popover.driverjs-theme .driver-popover-footer button {
+  display: inline-flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: 6px !important;
   background-color: var(--surface-soft) !important;
   color: var(--ink) !important;
   border: 1px solid var(--hairline) !important;
@@ -654,19 +658,19 @@ body {
   cursor: pointer !important;
 }
 
-.driver-popover.driverjs-theme .driver-popover-btn:hover {
+.driver-popover.driverjs-theme .driver-popover-footer button:hover {
   background-color: var(--surface-strong) !important;
   border-color: var(--border-strong) !important;
 }
 
-.driver-popover.driverjs-theme .driver-popover-next-btn,
-.driver-popover.driverjs-theme .driver-popover-btn:hover.driver-popover-next-btn {
+.driver-popover.driverjs-theme .driver-popover-footer button.driver-popover-next-btn,
+.driver-popover.driverjs-theme .driver-popover-footer button:hover.driver-popover-next-btn {
   background-color: var(--primary) !important;
   color: var(--on-primary) !important;
   border: 1px solid var(--primary) !important;
 }
 
-.driver-popover.driverjs-theme .driver-popover-next-btn:hover {
+.driver-popover.driverjs-theme .driver-popover-footer button.driver-popover-next-btn:hover {
   background-color: var(--primary-active) !important;
   border-color: var(--primary-active) !important;
   color: var(--on-primary) !important;

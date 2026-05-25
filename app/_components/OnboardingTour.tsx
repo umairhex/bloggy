@@ -24,6 +24,9 @@ export default function OnboardingTour() {
         allowClose: true,
         overlayColor: 'rgba(0, 0, 0, 0.75)',
         popoverClass: 'driverjs-theme',
+        nextBtnText: 'Next \u00A0 \u2192',
+        prevBtnText: '\u2190 \u00A0 Previous',
+        doneBtnText: 'Done',
         steps: [
           {
             popover: {
