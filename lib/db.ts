@@ -1,6 +1,5 @@
 import mongoose from 'mongoose';
-
-const MONGODB_URI = process.env.MONGODB_URI;
+import { getDBConfig } from './config/storage';
 
 let isConnected = false;
 
@@ -10,12 +9,15 @@ export const connectToDB = async () => {
     return;
   }
 
-  if (!MONGODB_URI) {
-    throw new Error('Please provide MongoDB URI');
+  // Get MongoDB URI - prefer user's config, fallback to .env
+  const mongodbUri = getDBConfig() || process.env.MONGODB_URI;
+
+  if (!mongodbUri) {
+    throw new Error('Please configure MongoDB connection. Go to Settings to add your MongoDB URI.');
   }
 
   try {
-    await mongoose.connect(MONGODB_URI);
+    await mongoose.connect(mongodbUri);
     isConnected = true;
     console.log('Connected to MongoDB');
   } catch (error) {
