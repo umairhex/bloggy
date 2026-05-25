@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 import mongoose from 'mongoose';
+import { isLocalMongoUri } from '@/lib/db';
 
 export async function POST(req: Request) {
   try {
@@ -11,6 +12,16 @@ export async function POST(req: Request) {
 
     if (!mongoUri.startsWith('mongodb://') && !mongoUri.startsWith('mongodb+srv://')) {
       return NextResponse.json({ error: 'Invalid MongoDB URI format' }, { status: 400 });
+    }
+
+    if (isLocalMongoUri(mongoUri) && process.env.NODE_ENV === 'production') {
+      return NextResponse.json(
+        {
+          error:
+            'Local MongoDB URIs (localhost/127.0.0.1) cannot be reached from the hosted app. Use a publicly reachable host or MongoDB Atlas.',
+        },
+        { status: 400 }
+      );
     }
 
     const connection = await mongoose.connect(mongoUri, {

@@ -40,7 +40,7 @@ export default function OnboardingTour() {
             popover: {
               title: 'Connect Your MongoDB',
               description:
-                'Click this gear icon to connect your local or cloud (Atlas) MongoDB database. Connecting your database is required to load and save your content.',
+                'Click this gear icon to connect your MongoDB database. Local URIs work only when Bloggy runs locally; hosted deployments need a publicly reachable host or Atlas.',
               side: 'bottom',
               align: 'end',
             },

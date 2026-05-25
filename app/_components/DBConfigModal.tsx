@@ -191,7 +191,8 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
                 </button>
               </div>
               <p className="text-xs text-muted">
-                Use your own MongoDB instance. Supports both local and cloud (Atlas) connections.
+                Use your own MongoDB instance. Local URIs work only when Bloggy runs locally;
+                hosted deployments require a publicly reachable MongoDB host or Atlas.
               </p>
             </div>
           ) : (

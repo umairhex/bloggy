@@ -40,7 +40,7 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from '@/components/ui/alert-dialog';
-import { deletePosts, postKeys, postsQueryOptions, updatePost } from '@/lib/api/posts';
+import { deletePosts, postKeys, postsQueryOptions, updatePost, type DeletePostItem } from '@/lib/api/posts';
 
 const statusVariant: Record<PostStatus, 'default' | 'secondary' | 'outline'> = {
   Published: 'default',
@@ -111,9 +111,10 @@ export default function PublishingManager() {
     onSettled: () => queryClient.invalidateQueries({ queryKey: postKeys.all }),
   });
 
-  const deletePostsMutation = useMutation({
-    mutationFn: deletePosts,
-    onMutate: async (ids) => {
+  const deletePostsMutation = useMutation<string[], Error, DeletePostItem[], { snapshot?: BlogPost[] }>({
+    mutationFn: (items) => deletePosts(items),
+    onMutate: async (items) => {
+      const ids = items.map((item) => item.id);
       await queryClient.cancelQueries({ queryKey: postKeys.list() });
       const snapshot = queryClient.getQueryData<BlogPost[]>(postKeys.list());
       updatePostsCache((current) => current.filter((post) => !ids.includes(post.id)));
@@ -174,6 +175,7 @@ export default function PublishingManager() {
         updates: {
           status,
           publishDate: status === 'Published' ? new Date().toISOString() : post.publishDate,
+          projectId: post.projectId ?? '',
         },
       },
       { onSuccess: () => toast.success(`Moved "${post.title}" to ${status}.`) }
@@ -194,8 +196,12 @@ export default function PublishingManager() {
   };
 
   const handleConfirmDelete = () => {
-    const ids = [...deleteDialog.ids];
-    deletePostsMutation.mutate(ids, {
+    const items: DeletePostItem[] = deleteDialog.ids.map((id) => {
+      const post = posts.find((entry) => entry.id === id);
+      return { id, projectId: post?.projectId };
+    });
+
+    deletePostsMutation.mutate(items, {
       onSuccess: () => {
         setSelectedIds([]);
         toast.success('Posts deleted.');

@@ -2,6 +2,7 @@ import mongoose from 'mongoose';
 import { cookies } from 'next/headers';
 
 let isConnected = false;
+const projectConnections = new Map<string, mongoose.Connection>();
 
 function deobfuscate(str: string): string {
   try {
@@ -61,6 +62,39 @@ export const connectToDB = async () => {
     return false;
   }
 };
+
+export function isLocalMongoUri(mongodbUri: string): boolean {
+  const lowered = mongodbUri.toLowerCase();
+  return (
+    lowered.includes('localhost') ||
+    lowered.includes('127.0.0.1') ||
+    lowered.includes('[::1]') ||
+    lowered.includes('0.0.0.0')
+  );
+}
+
+export async function getProjectConnection(mongodbUri: string) {
+  const cached = projectConnections.get(mongodbUri);
+  if (cached) {
+    if (cached.readyState === 1) {
+      return cached;
+    }
+    if (cached.readyState === 2) {
+      await cached.asPromise();
+      return cached;
+    }
+  }
+
+  const connection = mongoose.createConnection(mongodbUri, {
+    bufferCommands: false,
+    serverSelectionTimeoutMS: 5000,
+    connectTimeoutMS: 5000,
+  });
+
+  await connection.asPromise();
+  projectConnections.set(mongodbUri, connection);
+  return connection;
+}
 
 export async function hasDBConfigServer() {
   if (process.env.MONGODB_URI) {

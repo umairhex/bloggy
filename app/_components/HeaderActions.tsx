@@ -59,7 +59,7 @@ export default function HeaderActions() {
       <DBConfigModal
         isOpen={isConfigModalOpen}
         onClose={() => setIsConfigModalOpen(false)}
-        onConfigured={() => {}}
+        onConfigured={() => router.refresh()}
       />
 
       <OnboardingTour />

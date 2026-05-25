@@ -13,6 +13,19 @@ import {
 } from '@/components/ui/select';
 import { projectFormSchema, ProjectFormValues } from '@/lib/validations/project';
 
+function extractDatabaseName(uri: string): string | null {
+  if (!uri) return null;
+  const protocolIndex = uri.indexOf('://');
+  if (protocolIndex === -1) return null;
+  const afterProtocol = uri.slice(protocolIndex + 3);
+  const slashIndex = afterProtocol.indexOf('/');
+  if (slashIndex === -1) return null;
+  const dbWithOptions = afterProtocol.slice(slashIndex + 1).trim();
+  if (!dbWithOptions) return null;
+  const dbName = dbWithOptions.split('?')[0]?.trim();
+  return dbName || null;
+}
+
 interface ProjectFormModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -37,6 +50,7 @@ export default function ProjectFormModal({
   const [uriError, setUriError] = useState('');
   const [testingConnection, setTestingConnection] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState<'success' | 'error' | null>(null);
+  const detectedDbName = extractDatabaseName(mongodbUri);
 
   const validate = () => {
     const result = projectFormSchema.safeParse({
@@ -213,6 +227,11 @@ export default function ProjectFormModal({
                 }`}
               />
 
+              <div className="flex items-center justify-between rounded-sm bg-surface-soft px-3 py-2 border border-hairline text-xs">
+                <span className="text-muted">Detected database</span>
+                <span className="font-mono text-ink">{detectedDbName ?? 'Not specified'}</span>
+              </div>
+
               {connectionStatus === 'success' && (
                 <p className="text-xs text-green-600 font-medium flex items-center gap-xs mt-1 animate-fade-in">
                   <span className="text-green-500 font-bold">✓</span> Connection successful!
@@ -235,7 +254,7 @@ export default function ProjectFormModal({
                 <code className="font-mono bg-surface-soft px-1 py-0.5 rounded">
                   mongodb+srv://
                 </code>
-                .
+                . Local URIs only work when Bloggy runs locally.
               </p>
             </div>
           </div>

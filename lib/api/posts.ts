@@ -64,11 +64,16 @@ export async function updatePost({
   return parseResponse<BlogPost[]>(response);
 }
 
-export async function deletePosts(ids: string[]): Promise<string[]> {
+export type DeletePostItem = { id: string; projectId?: string };
+
+export async function deletePosts(items: string[] | DeletePostItem[]): Promise<string[]> {
+  const isItemPayload =
+    items.length > 0 && typeof items[0] === 'object' && items[0] !== null && 'id' in items[0];
+
   const response = await fetch('/api/posts', {
     method: 'DELETE',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ ids }),
+    body: JSON.stringify(isItemPayload ? { items } : { ids: items }),
   });
 
   return parseResponse<string[]>(response);

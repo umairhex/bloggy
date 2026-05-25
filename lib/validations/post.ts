@@ -50,8 +50,16 @@ export const deletePostsSchema = z
   .object({
     id: z.string().trim().min(1).optional(),
     ids: z.array(z.string().trim().min(1)).optional(),
+    items: z
+      .array(
+        z.object({
+          id: z.string().trim().min(1),
+          projectId: z.string().trim().optional().default(''),
+        })
+      )
+      .optional(),
   })
-  .refine((value) => Boolean(value.id || value.ids?.length), {
+  .refine((value) => Boolean(value.id || value.ids?.length || value.items?.length), {
     message: 'At least one post id is required.',
   });
 

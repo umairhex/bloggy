@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-const BlogPostSchema = new Schema(
+export const BlogPostSchema = new Schema(
   {
     id: {
       type: String,
@@ -84,4 +84,12 @@ const BlogPostSchema = new Schema(
   }
 );
 
-export default mongoose.models.BlogPost || mongoose.model('BlogPost', BlogPostSchema);
+export function getBlogPostModel(connection?: mongoose.Connection) {
+  if (connection) {
+    return connection.models.BlogPost || connection.model('BlogPost', BlogPostSchema);
+  }
+
+  return mongoose.models.BlogPost || mongoose.model('BlogPost', BlogPostSchema);
+}
+
+export default getBlogPostModel();
