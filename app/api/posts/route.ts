@@ -99,44 +99,45 @@ export async function POST(req: Request) {
     }
 
     const normalizedProjectId = normalizeProjectId(parsed.data.projectId);
+    const postId = parsed.data.id ?? `post-${crypto.randomUUID()}`;
 
-    if (normalizedProjectId) {
-      const projectModel = await getProjectBlogPostModel(normalizedProjectId);
-      if (projectModel.error) return projectModel.error;
-
-      const post = await projectModel.model!.create(
-        normalizePostPayload({
-          ...parsed.data,
-          projectId: normalizedProjectId,
-          id: parsed.data.id ?? `post-${crypto.randomUUID()}`,
-        })
-      );
-
-      return NextResponse.json(
-        {
-          message: 'Post created successfully',
-          data: formatBlogPost(post.toObject()),
-        },
-        { status: 201 }
-      );
-    }
-
+   
     await connectToDB();
-    const post = await BlogPost.create(
+    const mainPost = await BlogPost.create(
       normalizePostPayload({
         ...parsed.data,
-        id: parsed.data.id ?? `post-${crypto.randomUUID()}`,
+        projectId: normalizedProjectId || undefined,
+        id: postId,
       })
     );
+
+   
+    if (normalizedProjectId) {
+      try {
+        const projectModel = await getProjectBlogPostModel(normalizedProjectId);
+        if (projectModel.model) {
+          await projectModel.model.create(
+            normalizePostPayload({
+              ...parsed.data,
+              projectId: normalizedProjectId,
+              id: postId,
+            })
+          );
+        }
+      } catch (projectError) {
+        console.warn(`Failed to mirror post in project ${normalizedProjectId} database:`, projectError);
+      }
+    }
 
     return NextResponse.json(
       {
         message: 'Post created successfully',
-        data: formatBlogPost(post.toObject()),
+        data: formatBlogPost(mainPost.toObject()),
       },
       { status: 201 }
     );
-  } catch {
+  } catch (error) {
+    console.error('Failed to create post:', error);
     return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
   }
 }
@@ -152,66 +153,38 @@ export async function PATCH(req: Request) {
     const normalizedProjectId = normalizeProjectId(parsed.data.updates.projectId);
     const updates = normalizePostPayload(parsed.data.updates);
 
-    if (normalizedProjectId) {
-      const projectModel = await getProjectBlogPostModel(normalizedProjectId);
-      if (projectModel.error) return projectModel.error;
-
-      const projectUpdate = await projectModel.model!.updateOne(
-        { id: parsed.data.id },
-        { $set: updates }
-      );
-
-      if (projectUpdate.matchedCount === 0) {
-        await connectToDB();
-        const mainUpdate = await BlogPost.updateOne({ id: parsed.data.id }, { $set: updates });
-        if (mainUpdate.matchedCount === 0) {
-          return NextResponse.json({ error: 'Post not found' }, { status: 404 });
-        }
-        const posts = await BlogPost.find({ id: parsed.data.id });
-        return NextResponse.json({
-          message: 'Post updated successfully',
-          data: posts.map((post) => formatBlogPost(post.toObject())),
-        });
-      }
-
-      const posts = await projectModel.model!.find({ id: parsed.data.id });
-
-      return NextResponse.json({
-        message: 'Post updated successfully',
-        data: posts.map((post) => formatBlogPost(post.toObject())),
-      });
-    }
-
+   
     await connectToDB();
     const mainUpdate = await BlogPost.updateOne({ id: parsed.data.id }, { $set: updates });
 
-    if (mainUpdate.matchedCount > 0) {
-      const posts = await BlogPost.find({ id: parsed.data.id });
-      return NextResponse.json({
-        message: 'Post updated successfully',
-        data: posts.map((post) => formatBlogPost(post.toObject())),
-      });
+    if (mainUpdate.matchedCount === 0) {
+      return NextResponse.json({ error: 'Post not found' }, { status: 404 });
     }
 
-    const projects = await Project.find().lean<{ id: string; mongodbUri: string }[]>();
-    for (const project of projects) {
-      if (isLocalMongoUri(project.mongodbUri) && process.env.NODE_ENV === 'production') {
-        continue;
-      }
-      const connection = await getProjectConnection(project.mongodbUri);
-      const ProjectBlogPost = getBlogPostModel(connection);
-      const result = await ProjectBlogPost.updateOne({ id: parsed.data.id }, { $set: updates });
-      if (result.matchedCount > 0) {
-        const posts = await ProjectBlogPost.find({ id: parsed.data.id });
-        return NextResponse.json({
-          message: 'Post updated successfully',
-          data: posts.map((post) => formatBlogPost(post.toObject())),
-        });
+   
+    if (normalizedProjectId) {
+      try {
+        const projectModel = await getProjectBlogPostModel(normalizedProjectId);
+        if (projectModel.model) {
+          await projectModel.model.updateOne(
+            { id: parsed.data.id },
+            { $set: { ...updates, projectId: normalizedProjectId } },
+            { upsert: true }
+          );
+        }
+      } catch (projectError) {
+        console.warn(`Failed to mirror post update in project ${normalizedProjectId} database:`, projectError);
       }
     }
 
-    return NextResponse.json({ error: 'Post not found' }, { status: 404 });
-  } catch {
+   
+    const posts = await BlogPost.find({ id: parsed.data.id });
+    return NextResponse.json({
+      message: 'Post updated successfully',
+      data: posts.map((post) => formatBlogPost(post.toObject())),
+    });
+  } catch (error) {
+    console.error('Failed to update post:', error);
     return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
   }
 }
