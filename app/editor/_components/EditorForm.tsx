@@ -151,7 +151,6 @@ export default function EditorForm() {
 
   return (
     <div className="flex h-full flex-1 overflow-hidden">
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 md:hidden"
@@ -160,7 +159,6 @@ export default function EditorForm() {
         />
       )}
 
-      {/* Editor container */}
       <div className="flex flex-1 flex-col overflow-hidden min-h-0">
         <div className="border-b border-hairline bg-canvas shrink-0 space-y-base px-md py-base sm:px-lg sm:pt-lg sm:pb-base">
           <input

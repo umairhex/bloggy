@@ -23,6 +23,7 @@ export default function SidebarNav() {
               return (
                 <Link
                   key={label}
+                  id={`nav-${label.toLowerCase()}`}
                   href={href || '#'}
                   className={`w-full flex items-center gap-md px-md py-sm rounded-sm text-sm mb-xs transition-colors
                     ${

@@ -14,17 +14,19 @@ export default function UserFooter() {
     return null;
   }
 
-  const { icon: Icon, label, href } = configSection.links[0];
-  const isActive = pathname === href;
+  const { icon: Icon, label } = configSection.links[0];
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.preventDefault();
+    window.dispatchEvent(new CustomEvent('open-db-config-modal'));
+  };
 
   return (
     <div className="px-md py-md border-t border-hairline">
       <Link
-        href={href || '#'}
-        className={`w-full flex items-center gap-md px-md py-sm rounded-sm text-sm transition-colors
-          ${
-            isActive ? 'bg-canvas text-ink font-medium' : 'text-body hover:bg-canvas hover:text-ink'
-          }`}
+        href="#"
+        onClick={handleClick}
+        className="w-full flex items-center gap-md px-md py-sm rounded-sm text-sm transition-colors text-body hover:bg-canvas hover:text-ink font-medium"
       >
         <Icon size={15} />
         <span className="flex-1 text-left">{label}</span>

@@ -41,7 +41,8 @@ export function formatBlogPost(post: BlogPostDocument): BlogPost {
 }
 
 export async function getBlogPosts() {
-  await connectToDB();
+  const connected = await connectToDB();
+  if (!connected) return [];
 
   try {
     const posts = await BlogPostModel.find().sort({ updatedAt: -1 }).lean<BlogPostDocument[]>();

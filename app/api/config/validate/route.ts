@@ -9,18 +9,15 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'MongoDB URI is required' }, { status: 400 });
     }
 
-    // Validate URI format
     if (!mongoUri.startsWith('mongodb://') && !mongoUri.startsWith('mongodb+srv://')) {
       return NextResponse.json({ error: 'Invalid MongoDB URI format' }, { status: 400 });
     }
 
-    // Attempt connection test
     const connection = await mongoose.connect(mongoUri, {
       serverSelectionTimeoutMS: 5000,
       connectTimeoutMS: 5000,
     });
 
-    // Close the test connection
     await connection.disconnect();
 
     return NextResponse.json({

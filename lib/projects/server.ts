@@ -33,7 +33,8 @@ export function formatProject(project: ProjectDocument): ProjectType {
 }
 
 export async function getProjects() {
-  await connectToDB();
+  const connected = await connectToDB();
+  if (!connected) return [];
 
   try {
     const projects = await Project.find().sort({ createdAt: -1 }).lean<ProjectDocument[]>();

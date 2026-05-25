@@ -1,9 +1,3 @@
-/**
- * Privacy-First Configuration Storage
- * Stores MongoDB connection string securely in localStorage
- * Data never leaves the user's browser
- */
-
 const CONFIG_KEY = 'bloggy_db_config';
 
 interface DBConfig {
@@ -11,10 +5,6 @@ interface DBConfig {
   timestamp: number;
 }
 
-/**
- * Simple obfuscation (not encryption - for privacy, not security)
- * Use only for hiding from casual inspection. For real security, use encryption libraries.
- */
 function obfuscate(str: string): string {
   return btoa(str);
 }
@@ -27,9 +17,6 @@ function deobfuscate(str: string): string {
   }
 }
 
-/**
- * Save MongoDB connection string to localStorage
- */
 export function saveDBConfig(mongodbUri: string): void {
   if (typeof window === 'undefined') {
     throw new Error('Storage is only available in the browser');
@@ -44,19 +31,25 @@ export function saveDBConfig(mongodbUri: string): void {
     timestamp: Date.now(),
   };
 
+  const serialized = JSON.stringify(config);
+
   try {
-    localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+    localStorage.setItem(CONFIG_KEY, serialized);
   } catch (error) {
     if (error instanceof Error && error.name === 'QuotaExceededError') {
       throw new Error('localStorage is full');
     }
     throw error;
   }
+
+  try {
+    const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
+    document.cookie = `${CONFIG_KEY}=${encodeURIComponent(serialized)}; expires=${expires}; path=/; SameSite=Lax; Secure`;
+  } catch (cookieError) {
+    console.error('Failed to set DB config cookie:', cookieError);
+  }
 }
 
-/**
- * Retrieve MongoDB connection string from localStorage
- */
 export function getDBConfig(): string | null {
   if (typeof window === 'undefined') {
     return null;
@@ -75,9 +68,6 @@ export function getDBConfig(): string | null {
   }
 }
 
-/**
- * Check if MongoDB is configured
- */
 export function isDBConfigured(): boolean {
   if (typeof window === 'undefined') {
     return false;
@@ -97,9 +87,6 @@ export function isDBConfigured(): boolean {
   }
 }
 
-/**
- * Clear MongoDB configuration
- */
 export function clearDBConfig(): void {
   if (typeof window === 'undefined') {
     return;
@@ -107,20 +94,20 @@ export function clearDBConfig(): void {
 
   try {
     localStorage.removeItem(CONFIG_KEY);
-  } catch {
-    // Silently fail
+  } catch {}
+
+  try {
+    document.cookie = `${CONFIG_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure`;
+  } catch (cookieError) {
+    console.error('Failed to clear DB config cookie:', cookieError);
   }
 }
 
-/**
- * Validate MongoDB URI format
- */
 export function validateMongoDBURI(uri: string): { valid: boolean; error?: string } {
   if (!uri || uri.trim().length === 0) {
     return { valid: false, error: 'MongoDB URI cannot be empty' };
   }
 
-  // Basic MongoDB URI validation
   if (!uri.startsWith('mongodb://') && !uri.startsWith('mongodb+srv://')) {
     return {
       valid: false,
@@ -129,7 +116,6 @@ export function validateMongoDBURI(uri: string): { valid: boolean; error?: strin
   }
 
   try {
-    // Try to parse as URL to check basic structure
     const urlPart = uri.split('://')[1];
     if (!urlPart || !urlPart.includes('/')) {
       return {

@@ -1,7 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { AlertCircle, Check, Eye, EyeOff } from 'lucide-react';
+import {
+  AlertCircle,
+  Check,
+  Eye,
+  EyeOff,
+  X,
+  Activity,
+  Database,
+  ShieldCheck,
+  Edit3,
+  Trash2,
+} from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import {
@@ -25,7 +36,10 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
   const [mongoUri, setMongoUri] = useState('');
   const [showUri, setShowUri] = useState(false);
   const [isValidating, setIsValidating] = useState(false);
+  const [isTesting, setIsTesting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [testResult, setTestResult] = useState<{ success: boolean; message: string } | null>(null);
+  const [isVerified, setIsVerified] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
 
   const handleOpenChange = (open: boolean) => {
@@ -51,29 +65,56 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
 
     setIsValidating(true);
     try {
+      saveDBConfig(mongoUri);
+      toast.success('MongoDB configuration saved successfully!');
+      onConfigured();
+      setMongoUri('');
+      setIsVerified(false);
+      setIsEditing(false);
+      onClose();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Failed to save configuration';
+      setError(message);
+      toast.error(message);
+    } finally {
+      setIsValidating(false);
+    }
+  };
+
+  const handleTestConnection = async () => {
+    setError(null);
+    setTestResult(null);
+    setIsVerified(false);
+
+    const validation = validateMongoDBURI(mongoUri);
+    if (!validation.valid) {
+      setTestResult({ success: false, message: validation.error || 'Invalid MongoDB URI' });
+      return;
+    }
+
+    setIsTesting(true);
+    try {
       const response = await fetch('/api/config/validate', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mongoUri }),
       });
 
+      const data = await response.json();
+
       if (!response.ok) {
-        const data = await response.json();
         throw new Error(data.error || 'Failed to validate MongoDB connection');
       }
 
-      saveDBConfig(mongoUri);
-      toast.success('MongoDB configuration saved successfully!');
-      onConfigured();
-      setMongoUri('');
-      setIsEditing(false);
-      onClose();
+      setTestResult({ success: true, message: 'Connection verified successfully!' });
+      setIsVerified(true);
+      toast.success('MongoDB connection verified successfully!');
     } catch (err) {
       const message = err instanceof Error ? err.message : 'Failed to validate connection';
-      setError(message);
+      setTestResult({ success: false, message });
       toast.error(message);
     } finally {
-      setIsValidating(false);
+      setIsTesting(false);
     }
   };
 
@@ -112,10 +153,11 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
         </DialogHeader>
 
         <div className="space-y-base">
-          <div className="rounded-md bg-surface-soft p-md border border-hairline-soft">
+          <div className="rounded-md bg-surface-soft p-md border border-hairline-soft flex gap-md items-start">
+            <ShieldCheck size={16} className="text-primary mt-0.5 shrink-0" />
             <p className="text-xs text-body leading-relaxed">
-              <strong>🔒 Privacy First:</strong> Your MongoDB connection string is stored only in
-              your browser&apos;s localStorage. Bloggy never sends, stores, or accesses your
+              <strong>Privacy First:</strong> Your MongoDB connection string is stored only in your
+              browser&apos;s localStorage. Bloggy never sends, stores, or accesses your
               configuration on any server.
             </p>
           </div>
@@ -133,9 +175,11 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
                   onChange={(e) => {
                     setMongoUri(e.target.value);
                     setError(null);
+                    setTestResult(null);
+                    setIsVerified(false);
                   }}
                   placeholder="mongodb+srv://user:password@cluster.mongodb.net/dbname"
-                  className="w-full rounded-sm border border-hairline bg-surface-card px-3 py-2 pr-10 text-sm placeholder:text-hairline-soft focus:border-primary focus:outline-none"
+                  className="w-full rounded-sm border border-hairline bg-surface-card px-3 py-2 pr-10 text-sm placeholder:text-muted-soft focus:border-primary focus:outline-none"
                 />
                 <button
                   type="button"
@@ -168,18 +212,43 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
               <span className="text-sm text-red-700 dark:text-red-400">{error}</span>
             </div>
           )}
+
+          {testResult && (
+            <div
+              className={`flex items-start gap-md rounded-sm p-md border ${
+                testResult.success
+                  ? 'bg-green-50 border-green-200 dark:bg-green-900/20 dark:border-green-800 text-green-700 dark:text-green-400'
+                  : 'bg-red-50 border-red-200 dark:bg-red-900/20 dark:border-red-800 text-red-700 dark:text-red-400'
+              }`}
+            >
+              {testResult.success ? (
+                <Check size={16} className="text-green-600 dark:text-green-500 mt-0.5 shrink-0" />
+              ) : (
+                <AlertCircle size={16} className="text-red-600 dark:text-red-500 mt-0.5 shrink-0" />
+              )}
+              <span className="text-sm">{testResult.message}</span>
+            </div>
+          )}
         </div>
 
         <DialogFooter className="flex gap-xs justify-end">
           {hasConfig && !isEditing ? (
             <>
-              <Button variant="outline" onClick={handleClear} className="border-hairline text-ink">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={handleClear}
+                className="border-hairline text-ink gap-md"
+              >
+                <Trash2 size={14} />
                 Remove
               </Button>
               <Button
+                size="sm"
                 onClick={handleEdit}
-                className="bg-primary hover:bg-primary-active text-on-primary"
+                className="bg-primary hover:bg-primary-active text-on-primary gap-md"
               >
+                <Edit3 size={14} />
                 Update
               </Button>
             </>
@@ -187,18 +256,32 @@ export default function DBConfigModal({ isOpen, onClose, onConfigured }: DBConfi
             <>
               <Button
                 variant="outline"
+                size="sm"
                 onClick={onClose}
-                className="border-hairline text-ink"
-                disabled={isValidating}
+                className="border-hairline text-ink disabled:bg-surface-soft disabled:text-muted-soft disabled:opacity-100 gap-md"
+                disabled={isValidating || isTesting}
               >
+                <X size={14} />
                 {hasConfig ? 'Close' : 'Cancel'}
               </Button>
               <Button
-                onClick={handleValidateAndSave}
-                disabled={!mongoUri.trim() || isValidating}
-                className="bg-primary hover:bg-primary-active text-on-primary"
+                variant="outline"
+                size="sm"
+                onClick={handleTestConnection}
+                disabled={!mongoUri.trim() || isValidating || isTesting}
+                className="border-hairline text-ink disabled:bg-surface-soft disabled:text-muted-soft disabled:opacity-100 gap-md"
               >
-                {isValidating ? 'Validating...' : 'Save & Connect'}
+                <Activity size={14} className={isTesting ? 'animate-spin' : ''} />
+                {isTesting ? 'Testing...' : 'Test Connection'}
+              </Button>
+              <Button
+                size="sm"
+                onClick={handleValidateAndSave}
+                disabled={!isVerified || isValidating || isTesting}
+                className="bg-primary hover:bg-primary-active text-on-primary disabled:bg-surface-strong disabled:text-muted-soft disabled:opacity-100 gap-md"
+              >
+                <Database size={14} />
+                {isValidating ? 'Saving...' : 'Save & Connect'}
               </Button>
             </>
           )}

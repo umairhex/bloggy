@@ -19,7 +19,6 @@ export default function DashboardShell({ children }: DashboardShellProps) {
 
   return (
     <div className="flex h-dvh bg-canvas overflow-hidden">
-      {/* Mobile overlay */}
       {sidebarOpen && (
         <div
           className="fixed inset-0 z-40 bg-black/50 md:hidden"
@@ -28,7 +27,6 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         />
       )}
 
-      {/* Sidebar */}
       <aside
         className={`fixed bottom-0 left-0 top-0 z-50 flex w-56 flex-col border-r border-hairline bg-surface-soft transition-all duration-300 ease-out md:sticky md:translate-x-0 ${
           sidebarOpen ? 'translate-x-0' : '-translate-x-full'
@@ -47,7 +45,6 @@ export default function DashboardShell({ children }: DashboardShellProps) {
       </aside>
 
       <div className="flex flex-1 flex-col overflow-hidden">
-        {/* Header */}
         <header className="flex h-16 shrink-0 items-center justify-between border-b border-hairline bg-canvas px-md md:px-lg">
           <div className="flex min-w-0 items-center gap-md">
             <Button
@@ -66,7 +63,6 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           <HeaderActions />
         </header>
 
-        {/* Main content */}
         <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</main>
       </div>
     </div>
