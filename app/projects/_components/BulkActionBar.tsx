@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Trash2, Edit } from "lucide-react";
-import { motion } from "motion/react";
-import { mongodbUriSchema } from "@/lib/validations/project";
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Trash2, Edit } from 'lucide-react';
+import { motion } from 'motion/react';
+import { mongodbUriSchema } from '@/lib/validations/project';
 
 interface BulkActionBarProps {
   selectedCount: number;
@@ -20,29 +20,29 @@ export default function BulkActionBar({
   onClearSelection,
 }: BulkActionBarProps) {
   const [showBulkEditForm, setShowBulkEditForm] = useState(false);
-  const [bulkUri, setBulkUri] = useState("");
-  const [error, setError] = useState("");
+  const [bulkUri, setBulkUri] = useState('');
+  const [error, setError] = useState('');
 
   const handleBulkUpdateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     const parsedUri = mongodbUriSchema.safeParse(bulkUri);
 
     if (!parsedUri.success) {
-      setError(parsedUri.error.flatten().formErrors[0] || "Invalid MongoDB URI.");
+      setError(parsedUri.error.flatten().formErrors[0] || 'Invalid MongoDB URI.');
       return;
     }
     onBulkUpdate(parsedUri.data);
-    setBulkUri("");
-    setError("");
+    setBulkUri('');
+    setError('');
     setShowBulkEditForm(false);
   };
 
   return (
     <motion.div
-      initial={{ y: 80, x: "-50%", opacity: 0 }}
-      animate={{ y: 0, x: "-50%", opacity: 1 }}
-      exit={{ y: 80, x: "-50%", opacity: 0 }}
-      transition={{ type: "spring", stiffness: 350, damping: 30 }}
+      initial={{ y: 80, x: '-50%', opacity: 0 }}
+      animate={{ y: 0, x: '-50%', opacity: 1 }}
+      exit={{ y: 80, x: '-50%', opacity: 0 }}
+      transition={{ type: 'spring', stiffness: 350, damping: 30 }}
       className="fixed bottom-lg left-1/2 z-40 bg-surface-card text-ink rounded-full px-lg py-sm shadow-airbnb flex items-center gap-lg border border-hairline"
     >
       <div className="flex items-center gap-md">
@@ -84,7 +84,7 @@ export default function BulkActionBar({
               className="h-8 w-8 p-0 rounded-full hover:bg-hairline/50 text-ink cursor-pointer"
               onClick={() => {
                 setShowBulkEditForm(false);
-                setError("");
+                setError('');
               }}
             >
               X

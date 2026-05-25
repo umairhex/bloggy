@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Database, Plus } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Database, Plus } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 
 interface ProjectEmptyStateProps {
   searchQuery: string;
@@ -20,24 +20,23 @@ export default function ProjectEmptyState({
       <div className="w-14 h-14 rounded-full bg-surface-soft flex items-center justify-center text-muted mb-base">
         <Database size={28} />
       </div>
-      
+
       <h3 className="text-title-md font-semibold text-ink mb-xs">
-        {searchQuery ? "No results match search" : "No active projects"}
+        {searchQuery ? 'No results match search' : 'No active projects'}
       </h3>
-      
-      {/* FIX: Removed w-full and mx-auto, replaced with an explicit max-w-[400px] */}
+
       <p className="max-w-[400px] text-xs text-body mb-lg">
         {searchQuery
-          ? "Try adjusting your query or keywords to find matching database connection profiles."
-          : "Connect your first MongoDB connection strings to enable CMS sync, automated drafts, and analytics logging."}
+          ? 'Try adjusting your query or keywords to find matching database connection profiles.'
+          : 'Connect your first MongoDB connection strings to enable CMS sync, automated drafts, and analytics logging.'}
       </p>
-      
+
       <div className="flex gap-md shrink-0">
         {searchQuery ? (
           <Button
             variant="outline"
             className="h-9 px-md text-sm border-hairline text-ink rounded-sm font-medium cursor-pointer"
-            onClick={() => setSearchQuery("")}
+            onClick={() => setSearchQuery('')}
           >
             Clear Search
           </Button>

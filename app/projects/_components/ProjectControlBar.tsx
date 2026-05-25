@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React from "react";
-import { Search, Plus, RefreshCw } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import React from 'react';
+import { Search, Plus, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
+} from '@/components/ui/select';
 
 interface ProjectControlBarProps {
   searchQuery: string;
@@ -47,7 +47,7 @@ export default function ProjectControlBar({
           />
           {searchQuery && (
             <button
-              onClick={() => setSearchQuery("")}
+              onClick={() => setSearchQuery('')}
               className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted hover:text-ink cursor-pointer text-xs font-bold w-5 h-5 rounded-full hover:bg-surface-soft flex items-center justify-center transition-all"
               title="Clear Search"
             >
@@ -61,11 +61,34 @@ export default function ProjectControlBar({
             <SelectTrigger className="h-10 pl-4 pr-3 bg-canvas border border-hairline rounded-full text-sm text-ink outline-hidden hover:shadow-airbnb hover:border-hairline-soft transition-all cursor-pointer min-w-[160px] justify-between flex items-center focus:ring-1 focus:ring-ink focus:border-ink">
               <SelectValue placeholder="Sort by" />
             </SelectTrigger>
-            <SelectContent position="popper" className="bg-canvas border-hairline rounded-sm shadow-airbnb">
-              <SelectItem value="newest" className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer">Newest Added</SelectItem>
-              <SelectItem value="oldest" className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer">Oldest Added</SelectItem>
-              <SelectItem value="name-asc" className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer">Alphabetical (A-Z)</SelectItem>
-              <SelectItem value="name-desc" className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer">Alphabetical (Z-A)</SelectItem>
+            <SelectContent
+              position="popper"
+              className="bg-canvas border-hairline rounded-sm shadow-airbnb"
+            >
+              <SelectItem
+                value="newest"
+                className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer"
+              >
+                Newest Added
+              </SelectItem>
+              <SelectItem
+                value="oldest"
+                className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer"
+              >
+                Oldest Added
+              </SelectItem>
+              <SelectItem
+                value="name-asc"
+                className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer"
+              >
+                Alphabetical (A-Z)
+              </SelectItem>
+              <SelectItem
+                value="name-desc"
+                className="text-sm text-ink focus:bg-surface-soft hover:bg-surface-soft rounded-xs cursor-pointer"
+              >
+                Alphabetical (Z-A)
+              </SelectItem>
             </SelectContent>
           </Select>
         </div>
@@ -78,7 +101,7 @@ export default function ProjectControlBar({
           disabled={isRefreshing}
           className="h-10 border-hairline text-ink hover:bg-surface-soft gap-sm px-md rounded-sm cursor-pointer"
         >
-          <RefreshCw size={14} className={isRefreshing ? "animate-spin" : ""} />
+          <RefreshCw size={14} className={isRefreshing ? 'animate-spin' : ''} />
           Refresh
         </Button>
         <Button

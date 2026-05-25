@@ -1,9 +1,9 @@
-import React, { Suspense } from "react";
-import DashboardShell from "./_components/DashboardShell";
-import StatsGrid from "./_components/StatsGrid";
-import StatsGridSkeleton from "./_components/StatsGridSkeleton";
-import RecentPosts from "./_components/RecentPosts";
-import RecentPostsSkeleton from "./_components/RecentPostsSkeleton";
+import React, { Suspense } from 'react';
+import DashboardShell from './_components/DashboardShell';
+import StatsGrid from './_components/StatsGrid';
+import StatsGridSkeleton from './_components/StatsGridSkeleton';
+import RecentPosts from './_components/RecentPosts';
+import RecentPostsSkeleton from './_components/RecentPostsSkeleton';
 
 export default function Page() {
   return (

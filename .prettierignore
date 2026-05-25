@@ -1,0 +1,22 @@
+# Artifacts
+.next
+out
+build
+coverage
+node_modules
+pnpm-lock.yaml
+
+# Environment files
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db

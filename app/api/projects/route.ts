@@ -1,21 +1,18 @@
-import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import Project from "@/models/Project.model";
-import { formatProject, getProjects } from "@/lib/projects/server";
+import { NextResponse } from 'next/server';
+import { connectToDB } from '@/lib/db';
+import Project from '@/models/Project.model';
+import { formatProject, getProjects } from '@/lib/projects/server';
 import {
   bulkUpdateProjectsSchema,
   createProjectSchema,
   deleteProjectsSchema,
   updateProjectSchema,
-} from "@/lib/validations/project";
+} from '@/lib/validations/project';
 
 function validationError(error: unknown) {
   return NextResponse.json(
     {
-      error:
-        error instanceof Error
-          ? error.message
-          : "The project payload is invalid.",
+      error: error instanceof Error ? error.message : 'The project payload is invalid.',
     },
     { status: 400 }
   );
@@ -26,14 +23,11 @@ export async function GET() {
     const projects = await getProjects();
 
     return NextResponse.json({
-      message: "Projects fetched successfully",
+      message: 'Projects fetched successfully',
       data: projects,
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch projects" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch projects' }, { status: 500 });
   }
 }
 
@@ -54,21 +48,18 @@ export async function POST(req: Request) {
       mongodbUri: parsed.data.mongodbUri,
       category: parsed.data.category,
       isArchived: parsed.data.isArchived ?? false,
-      connectionStatus: parsed.data.connectionStatus ?? "untested",
+      connectionStatus: parsed.data.connectionStatus ?? 'untested',
     });
 
     return NextResponse.json(
       {
-        message: "Project created successfully",
+        message: 'Project created successfully',
         data: formatProject(project.toObject()),
       },
       { status: 201 }
     );
   } catch {
-    return NextResponse.json(
-      { error: "Internal Server Error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Internal Server Error' }, { status: 500 });
   }
 }
 
@@ -85,27 +76,20 @@ export async function PATCH(req: Request) {
       return validationError(parsed.error);
     }
 
-    const projectIds =
-      "ids" in parsed.data ? parsed.data.ids : [parsed.data.id];
+    const projectIds = 'ids' in parsed.data ? parsed.data.ids : [parsed.data.id];
 
-    await Project.updateMany(
-      { id: { $in: projectIds } },
-      { $set: parsed.data.updates }
-    );
+    await Project.updateMany({ id: { $in: projectIds } }, { $set: parsed.data.updates });
 
     const projects = await Project.find({ id: { $in: projectIds } }).sort({
       createdAt: -1,
     });
 
     return NextResponse.json({
-      message: "Projects updated successfully",
+      message: 'Projects updated successfully',
       data: projects.map((project) => formatProject(project.toObject())),
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to update projects" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update projects' }, { status: 500 });
   }
 }
 
@@ -124,13 +108,10 @@ export async function DELETE(req: Request) {
     await Project.deleteMany({ id: { $in: projectIds } });
 
     return NextResponse.json({
-      message: "Projects deleted successfully",
+      message: 'Projects deleted successfully',
       data: projectIds,
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to delete projects" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to delete projects' }, { status: 500 });
   }
 }

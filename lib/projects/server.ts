@@ -1,17 +1,17 @@
-import "server-only";
+import 'server-only';
 
-import { Project as ProjectType } from "@/types";
-import { connectToDB } from "@/lib/db";
-import Project from "@/models/Project.model";
+import { Project as ProjectType } from '@/types';
+import { connectToDB } from '@/lib/db';
+import Project from '@/models/Project.model';
 
 type ProjectDocument = {
   id: string;
   name: string;
   description?: string | null;
   mongodbUri: string;
-  category?: ProjectType["category"];
+  category?: ProjectType['category'];
   isArchived?: boolean;
-  connectionStatus?: ProjectType["connectionStatus"];
+  connectionStatus?: ProjectType['connectionStatus'];
   createdAt: Date | string;
 };
 
@@ -19,15 +19,15 @@ export function formatProject(project: ProjectDocument): ProjectType {
   return {
     id: project.id,
     name: project.name,
-    description: project.description ?? "",
+    description: project.description ?? '',
     mongodbUri: project.mongodbUri,
     category: project.category,
     isArchived: project.isArchived,
     connectionStatus: project.connectionStatus,
-    createdAt: new Date(project.createdAt).toLocaleDateString("en-US", {
-      month: "short",
-      day: "numeric",
-      year: "numeric",
+    createdAt: new Date(project.createdAt).toLocaleDateString('en-US', {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
     }),
   };
 }

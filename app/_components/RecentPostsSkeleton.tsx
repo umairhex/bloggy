@@ -1,11 +1,9 @@
-import React from "react";
+import React from 'react';
 
 export default function RecentPostsSkeleton() {
   return (
     <div>
-      <h2 className="font-serif text-title-md font-semibold mb-md text-ink">
-        Recent posts
-      </h2>
+      <h2 className="font-serif text-title-md font-semibold mb-md text-ink">Recent posts</h2>
       <div className="space-y-sm animate-pulse">
         {Array.from({ length: 4 }).map((_, index) => (
           <div

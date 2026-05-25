@@ -1,16 +1,16 @@
-import React from "react";
-import { Badge } from "@/components/ui/badge";
-import { FileText } from "lucide-react";
-import { statusVariant } from "../_constants";
-import { getBlogPosts } from "@/lib/posts/server";
+import React from 'react';
+import { Badge } from '@/components/ui/badge';
+import { FileText } from 'lucide-react';
+import { statusVariant } from '../_constants';
+import { getBlogPosts } from '@/lib/posts/server';
 
 function formatPostDate(postDate: string, status: string) {
-  if (!postDate) return status === "Draft" ? "Draft" : "Not scheduled";
+  if (!postDate) return status === 'Draft' ? 'Draft' : 'Not scheduled';
 
-  return new Intl.DateTimeFormat("en-US", {
-    month: "short",
-    day: "numeric",
-    year: "numeric",
+  return new Intl.DateTimeFormat('en-US', {
+    month: 'short',
+    day: 'numeric',
+    year: 'numeric',
   }).format(new Date(postDate));
 }
 
@@ -19,9 +19,7 @@ export default async function RecentPosts() {
 
   return (
     <div>
-      <h2 className="font-serif text-title-md font-semibold mb-md text-ink">
-        Recent posts
-      </h2>
+      <h2 className="font-serif text-title-md font-semibold mb-md text-ink">Recent posts</h2>
       <div className="space-y-sm">
         {posts.length === 0 && (
           <div className="p-base rounded-md border border-dashed border-hairline bg-canvas text-sm text-body">

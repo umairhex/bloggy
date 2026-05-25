@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-// You can remove the ScrollArea import if it is no longer used elsewhere in this file
-import { Button } from "@/components/ui/button";
-import { Menu, X } from "lucide-react";
+import React, { useState } from 'react';
 
-import SidebarNav from "./SidebarNav";
-import UserFooter from "./UserFooter";
-import HeaderBreadcrumbs from "./HeaderBreadcrumbs";
-import HeaderActions from "./HeaderActions";
-import DashboardFooter from "./DashboardFooter";
+import { Button } from '@/components/ui/button';
+import { Menu, X } from 'lucide-react';
+
+import SidebarNav from './SidebarNav';
+import UserFooter from './UserFooter';
+import HeaderBreadcrumbs from './HeaderBreadcrumbs';
+import HeaderActions from './HeaderActions';
+import DashboardFooter from './DashboardFooter';
 
 interface DashboardShellProps {
   children: React.ReactNode;
@@ -22,7 +22,7 @@ export default function DashboardShell({ children }: DashboardShellProps) {
     <div className="flex h-screen bg-canvas overflow-hidden">
       <aside
         className={`shrink-0 border-r border-hairline bg-surface-soft flex flex-col transition-all duration-300 ease-out ${
-          sidebarOpen ? "w-56" : "w-0"
+          sidebarOpen ? 'w-56' : 'w-0'
         } overflow-hidden`}
       >
         <div className="h-16 px-base border-b border-hairline flex flex-col justify-center shrink-0">
@@ -53,17 +53,8 @@ export default function DashboardShell({ children }: DashboardShellProps) {
           <HeaderActions />
         </header>
 
-        {/* FIX: Replaced <ScrollArea> with a strict flex container.
-          min-h-0 is crucial here so the container shrinks to the viewport, 
-          forcing the Editor component inside to manage its own overflow.
-        */}
-        <main className="flex-1 flex flex-col overflow-hidden min-h-0 relative">
-          {children}
-        </main>
+        <main className="flex-1 flex flex-col overflow-hidden min-h-0 relative">{children}</main>
 
-        {/* Added shrink-0 so the footer doesn't get squished if the screen 
-          height gets extremely small 
-        */}
         <div className="shrink-0">
           <DashboardFooter />
         </div>

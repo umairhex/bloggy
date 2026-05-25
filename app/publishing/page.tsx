@@ -1,16 +1,16 @@
-import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
-import DashboardShell from "../_components/DashboardShell";
-import PublishingManager from "./_components/PublishingManager";
-import { getQueryClient } from "@/lib/get-query-client";
-import { postsQueryOptions } from "@/lib/api/posts";
-import { getBlogPosts } from "@/lib/posts/server";
+import { dehydrate, HydrationBoundary } from '@tanstack/react-query';
+import DashboardShell from '../_components/DashboardShell';
+import PublishingManager from './_components/PublishingManager';
+import { getQueryClient } from '@/lib/get-query-client';
+import { postsQueryOptions } from '@/lib/api/posts';
+import { getBlogPosts } from '@/lib/posts/server';
 
 export const metadata = {
-  title: "Publishing — bloggy.",
-  description: "Review, schedule, and publish workspace content.",
+  title: 'Publishing — bloggy.',
+  description: 'Review, schedule, and publish workspace content.',
 };
 
-export const dynamic = "force-dynamic";
+export const dynamic = 'force-dynamic';
 
 export default async function PublishingPage() {
   const queryClient = getQueryClient();
@@ -23,7 +23,6 @@ export default async function PublishingPage() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <DashboardShell>
-        {/* FIX: Added h-full and overflow-y-auto so the page content scrolls naturally inside the locked shell */}
         <main className="h-full w-full overflow-y-auto p-base md:p-lg lg:p-xl">
           <PublishingManager />
         </main>

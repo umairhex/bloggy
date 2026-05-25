@@ -1,43 +1,17 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @custom-variant dark (&:where(.dark, .dark *));
 
 :root {
   /* Airbnb Brand Colors */
-  --primary: #ff385c;
-  --primary-active: #e00b41;
-  --primary-disabled: #ffd1da;
-  --primary-error-text: #c13515;
-  --primary-error-text-hover: #b32505;
-  --luxe: #460479;
-  --plus: #92174d;
-
-  /* Text Colors */
-  --ink: #222222;
-  --body: #3f3f3f;
-  --muted: #6a6a6a;
-  --muted-soft: #929292;
-
-  /* Surface Colors */
-  --canvas: #ffffff;
-  --surface-soft: #f7f7f7;
-  --surface-strong: #f2f2f2;
-  --surface-card: #ffffff;
-
-  /* Borders */
-  --hairline: #dddddd;
-  --hairline-soft: #ebebeb;
-  --border-strong: #c1c1c1;
-
-  /* Semantic */
-  --on-primary: #ffffff;
-  --on-dark: #ffffff;
-  --legal-link: #428bff;
-  --star-rating: #222222;
-  --scrim: #000000;
-
-  /* Mapped to shadcn tokens for compatibility */
-  --background: var(--canvas);
+  --primary: --primary-active: --primary-disabled: --primary-error-text: --primary-error-text-hover:
+    --luxe: --plus: /* Text Colors */
+    --ink: --body: --muted: --muted-soft: /* Surface Colors */
+    --canvas: --surface-soft: --surface-strong: --surface-card: /* Borders */
+    --hairline: --hairline-soft: --border-strong: /* Semantic */
+    --on-primary: --on-dark: --legal-link: --star-rating: --scrim:
+    /* Mapped to shadcn tokens for compatibility */
+    --background: var(--canvas);
   --foreground: var(--ink);
   --card: var(--surface-card);
   --card-foreground: var(--ink);
@@ -55,13 +29,16 @@
   --input: var(--surface-strong);
   --ring: var(--primary);
   /* Typography */
-  --font-display: "Airbnb Cereal VF", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
-  --font-sans: "Airbnb Cereal VF", Circular, -apple-system, system-ui, Roboto, "Helvetica Neue", sans-serif;
+  --font-display:
+    'Airbnb Cereal VF', Circular, -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif;
+  --font-sans:
+    'Airbnb Cereal VF', Circular, -apple-system, system-ui, Roboto, 'Helvetica Neue', sans-serif;
   --font-serif: Georgia, serif;
-  --font-mono: Menlo, Monaco, "Courier New", monospace;
+  --font-mono: Menlo, Monaco, 'Courier New', monospace;
 
   /* Shadow System - Single tier */
-  --shadow-base: rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0;
+  --shadow-base:
+    rgba(0, 0, 0, 0.02) 0 0 0 1px, rgba(0, 0, 0, 0.04) 0 2px 6px 0, rgba(0, 0, 0, 0.1) 0 4px 8px 0;
 
   /* Spacing tokens (8px base unit) */
   --spacing-xxs: 2px;
@@ -86,40 +63,17 @@
 
 .dark {
   /* Airbnb Brand Colors - Dark Adaptations */
-  --primary: #ff385c;
-  --primary-active: #ff4f70;
-  --primary-disabled: #4c1722;
-  --primary-error-text: #ff5a5f;
-  --primary-error-text-hover: #ff7e82;
-  --luxe: #ab47bc;
-  --plus: #ec407a;
-
-  /* Text Colors */
-  --ink: #f7f7f7;
-  --body: #e3e3e3;
-  --muted: #a3a3a3;
-  --muted-soft: #767676;
-
-  /* Surface Colors */
-  --canvas: #0c0c0e;
-  --surface-soft: #161619;
-  --surface-strong: #222226;
-  --surface-card: #18181c;
-
-  /* Borders */
-  --hairline: #222225;
-  --hairline-soft: #1b1b1e;
-  --border-strong: #44444a;
-
-  /* Semantic */
-  --on-primary: #ffffff;
-  --on-dark: #ffffff;
-  --legal-link: #549dff;
-  --star-rating: var(--ink);
-  --scrim: #000000;
+  --primary: --primary-active: --primary-disabled: --primary-error-text: --primary-error-text-hover:
+    --luxe: --plus: /* Text Colors */
+    --ink: --body: --muted: --muted-soft: /* Surface Colors */
+    --canvas: --surface-soft: --surface-strong: --surface-card: /* Borders */
+    --hairline: --hairline-soft: --border-strong: /* Semantic */
+    --on-primary: --on-dark: --legal-link: --star-rating: var(--ink);
+  --scrim: 
 
   /* Shadows - Dark Mode Elevation */
-  --shadow-base: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.4) 0 4px 12px 0, rgba(0, 0, 0, 0.3) 0 8px 24px 0;
+    --shadow-base: rgba(0, 0, 0, 0.2) 0 0 0 1px, rgba(0, 0, 0, 0.4) 0 4px 12px 0,
+    rgba(0, 0, 0, 0.3) 0 8px 24px 0;
 }
 
 @theme inline {
@@ -290,7 +244,6 @@ body {
 /* Global utility classes based on Airbnb design system */
 
 @layer utilities {
-
   /* Shadow utility - single tier elevation */
   .shadow-airbnb {
     box-shadow: var(--shadow-base);
@@ -319,7 +272,7 @@ body {
   .text-display-sm {
     font-size: 20px;
     font-weight: 600;
-    line-height: 1.20;
+    line-height: 1.2;
     letter-spacing: -0.18px;
   }
 

@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Project } from "@/types";
+import React, { useState } from 'react';
+import { Project } from '@/types';
 import {
   AlertDialog,
   AlertDialogAction,
@@ -11,17 +11,17 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from "@/components/ui/alert-dialog";
+} from '@/components/ui/alert-dialog';
 
-import { AnimatePresence } from "motion/react";
-import { toast } from "sonner";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import ProjectCard from "./ProjectCard";
-import ProjectFormModal from "./ProjectFormModal";
-import BulkActionBar from "./BulkActionBar";
-import ProjectsSkeleton from "./ProjectsSkeleton";
-import ProjectControlBar from "./ProjectControlBar";
-import ProjectEmptyState from "./ProjectEmptyState";
+import { AnimatePresence } from 'motion/react';
+import { toast } from 'sonner';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import ProjectCard from './ProjectCard';
+import ProjectFormModal from './ProjectFormModal';
+import BulkActionBar from './BulkActionBar';
+import ProjectsSkeleton from './ProjectsSkeleton';
+import ProjectControlBar from './ProjectControlBar';
+import ProjectEmptyState from './ProjectEmptyState';
 import {
   bulkUpdateProjects,
   createProject,
@@ -29,16 +29,22 @@ import {
   projectKeys,
   projectsQueryOptions,
   updateProject,
-} from "@/lib/api/projects";
-import { ProjectFormValues } from "@/lib/validations/project";
+} from '@/lib/api/projects';
+import { ProjectFormValues } from '@/lib/validations/project';
 
 export default function ProjectsManager() {
   const queryClient = useQueryClient();
-  const { data: projects = [], error, isError, isFetching, isPending, refetch } =
-    useQuery(projectsQueryOptions());
-  const [searchQuery, setSearchQuery] = useState("");
+  const {
+    data: projects = [],
+    error,
+    isError,
+    isFetching,
+    isPending,
+    refetch,
+  } = useQuery(projectsQueryOptions());
+  const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
-  const [sortBy, setSortBy] = useState("newest");
+  const [sortBy, setSortBy] = useState('newest');
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [editingProject, setEditingProject] = useState<Project | null>(null);
@@ -52,17 +58,15 @@ export default function ProjectsManager() {
     onAction: () => void;
   }>({
     isOpen: false,
-    title: "",
-    description: "",
-    actionLabel: "",
+    title: '',
+    description: '',
+    actionLabel: '',
     showCancel: true,
     onAction: () => {},
   });
 
   const updateProjectsCache = (updater: (projects: Project[]) => Project[]) => {
-    queryClient.setQueryData<Project[]>(projectKeys.list(), (current = []) =>
-      updater(current)
-    );
+    queryClient.setQueryData<Project[]>(projectKeys.list(), (current = []) => updater(current));
   };
 
   const createProjectMutation = useMutation({
@@ -73,9 +77,7 @@ export default function ProjectsManager() {
     },
     onError: (mutationError) => {
       toast.error(
-        mutationError instanceof Error
-          ? mutationError.message
-          : "Failed to create project."
+        mutationError instanceof Error ? mutationError.message : 'Failed to create project.'
       );
     },
     onSettled: () => {
@@ -90,9 +92,7 @@ export default function ProjectsManager() {
       const snapshot = queryClient.getQueryData<Project[]>(projectKeys.list());
 
       updateProjectsCache((current) =>
-        current.map((project) =>
-          project.id === id ? { ...project, ...updates } : project
-        )
+        current.map((project) => (project.id === id ? { ...project, ...updates } : project))
       );
 
       return { snapshot };
@@ -100,9 +100,7 @@ export default function ProjectsManager() {
     onError: (mutationError, _variables, context) => {
       queryClient.setQueryData(projectKeys.list(), context?.snapshot);
       toast.error(
-        mutationError instanceof Error
-          ? mutationError.message
-          : "Failed to update project."
+        mutationError instanceof Error ? mutationError.message : 'Failed to update project.'
       );
     },
     onSettled: () => {
@@ -117,9 +115,7 @@ export default function ProjectsManager() {
       const snapshot = queryClient.getQueryData<Project[]>(projectKeys.list());
 
       updateProjectsCache((current) =>
-        current.map((project) =>
-          ids.includes(project.id) ? { ...project, ...updates } : project
-        )
+        current.map((project) => (ids.includes(project.id) ? { ...project, ...updates } : project))
       );
 
       return { snapshot };
@@ -127,9 +123,7 @@ export default function ProjectsManager() {
     onError: (mutationError, _variables, context) => {
       queryClient.setQueryData(projectKeys.list(), context?.snapshot);
       toast.error(
-        mutationError instanceof Error
-          ? mutationError.message
-          : "Failed to bulk update projects."
+        mutationError instanceof Error ? mutationError.message : 'Failed to bulk update projects.'
       );
     },
     onSettled: () => {
@@ -143,18 +137,14 @@ export default function ProjectsManager() {
       await queryClient.cancelQueries({ queryKey: projectKeys.list() });
       const snapshot = queryClient.getQueryData<Project[]>(projectKeys.list());
 
-      updateProjectsCache((current) =>
-        current.filter((project) => !ids.includes(project.id))
-      );
+      updateProjectsCache((current) => current.filter((project) => !ids.includes(project.id)));
 
       return { snapshot };
     },
     onError: (mutationError, _variables, context) => {
       queryClient.setQueryData(projectKeys.list(), context?.snapshot);
       toast.error(
-        mutationError instanceof Error
-          ? mutationError.message
-          : "Failed to delete projects."
+        mutationError instanceof Error ? mutationError.message : 'Failed to delete projects.'
       );
     },
     onSettled: () => {
@@ -200,17 +190,17 @@ export default function ProjectsManager() {
     const projectToDelete = projects.find((project) => project.id === id);
     setAlertDialog({
       isOpen: true,
-      title: "Delete Project?",
+      title: 'Delete Project?',
       description: `Are you sure you want to permanently delete "${
-        projectToDelete?.name || "this project"
+        projectToDelete?.name || 'this project'
       }"? This action cannot be undone.`,
-      actionLabel: "Delete",
+      actionLabel: 'Delete',
       showCancel: true,
       onAction: () => {
         deleteProjectsMutation.mutate([id], {
           onSuccess: () => {
             setSelectedIds((prev) => prev.filter((item) => item !== id));
-            toast.success(`Deleted project "${projectToDelete?.name || "Project"}".`);
+            toast.success(`Deleted project "${projectToDelete?.name || 'Project'}".`);
           },
         });
       },
@@ -222,9 +212,9 @@ export default function ProjectsManager() {
     const count = idsToDelete.length;
     setAlertDialog({
       isOpen: true,
-      title: "Delete Multiple Projects?",
+      title: 'Delete Multiple Projects?',
       description: `Are you sure you want to permanently delete the ${count} selected projects? This action cannot be undone and will erase all associated configurations.`,
-      actionLabel: "Delete Projects",
+      actionLabel: 'Delete Projects',
       showCancel: true,
       onAction: () => {
         deleteProjectsMutation.mutate(idsToDelete, {
@@ -249,9 +239,9 @@ export default function ProjectsManager() {
           toast.success(`Bulk updated connection string for ${count} projects.`);
           setAlertDialog({
             isOpen: true,
-            title: "Connection Details Updated",
+            title: 'Connection Details Updated',
             description: `Successfully updated the MongoDB connection string for ${count} projects.`,
-            actionLabel: "Okay",
+            actionLabel: 'Okay',
             showCancel: false,
             onAction: () => {},
           });
@@ -267,19 +257,18 @@ export default function ProjectsManager() {
   const filteredProjects = projects.filter(
     (project) =>
       project.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (project.description &&
-        project.description.toLowerCase().includes(searchQuery.toLowerCase()))
+      (project.description && project.description.toLowerCase().includes(searchQuery.toLowerCase()))
   );
 
   const getSortedProjects = () => {
     const list = [...filteredProjects];
-    if (sortBy === "name-asc") {
+    if (sortBy === 'name-asc') {
       return list.sort((a, b) => a.name.localeCompare(b.name));
     }
-    if (sortBy === "name-desc") {
+    if (sortBy === 'name-desc') {
       return list.sort((a, b) => b.name.localeCompare(a.name));
     }
-    if (sortBy === "oldest") {
+    if (sortBy === 'oldest') {
       return list.reverse();
     }
     return list;
@@ -293,9 +282,7 @@ export default function ProjectsManager() {
   if (isError) {
     return (
       <div className="rounded-md border border-hairline bg-canvas p-lg text-sm text-body">
-        {error instanceof Error
-          ? error.message
-          : "Failed to load projects from the database."}
+        {error instanceof Error ? error.message : 'Failed to load projects from the database.'}
       </div>
     );
   }
@@ -303,9 +290,7 @@ export default function ProjectsManager() {
   return (
     <div className="space-y-lg relative min-h-125">
       <div className="flex flex-col space-y-xs pb-md border-b border-hairline">
-        <h1 className="font-serif text-display-md font-bold text-ink">
-          Workspace Projects
-        </h1>
+        <h1 className="font-serif text-display-md font-bold text-ink">Workspace Projects</h1>
         <p className="text-sm text-body">
           Manage database configuration mappings, connection endpoints, and environment variables.
         </p>
@@ -325,7 +310,9 @@ export default function ProjectsManager() {
       />
 
       {sortedProjects.length > 0 ? (
-        <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md ${selectedIds.length > 0 ? "pb-32" : "pb-xxl"}`}>
+        <div
+          className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-md ${selectedIds.length > 0 ? 'pb-32' : 'pb-xxl'}`}
+        >
           {sortedProjects.map((project) => (
             <ProjectCard
               key={project.id}
@@ -364,7 +351,7 @@ export default function ProjectsManager() {
       </AnimatePresence>
 
       <ProjectFormModal
-        key={editingProject ? `edit-${editingProject.id}` : "create"}
+        key={editingProject ? `edit-${editingProject.id}` : 'create'}
         isOpen={isModalOpen}
         onClose={() => {
           setIsModalOpen(false);
@@ -376,9 +363,7 @@ export default function ProjectsManager() {
 
       <AlertDialog
         open={alertDialog.isOpen}
-        onOpenChange={(open) =>
-          setAlertDialog((prev) => ({ ...prev, isOpen: open }))
-        }
+        onOpenChange={(open) => setAlertDialog((prev) => ({ ...prev, isOpen: open }))}
       >
         <AlertDialogContent className="bg-canvas border-hairline shadow-airbnb rounded-md max-w-md">
           <AlertDialogHeader>

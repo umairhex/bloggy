@@ -1,35 +1,26 @@
-import { NextResponse } from "next/server";
-import { connectToDB } from "@/lib/db";
-import BlogPost from "@/models/BlogPost.model";
-import { formatBlogPost, getBlogPosts } from "@/lib/posts/server";
-import {
-  createPostSchema,
-  deletePostsSchema,
-  updatePostSchema,
-} from "@/lib/validations/post";
+import { NextResponse } from 'next/server';
+import { connectToDB } from '@/lib/db';
+import BlogPost from '@/models/BlogPost.model';
+import { formatBlogPost, getBlogPosts } from '@/lib/posts/server';
+import { createPostSchema, deletePostsSchema, updatePostSchema } from '@/lib/validations/post';
 
 function validationError(error: unknown) {
   return NextResponse.json(
     {
-      error:
-        error instanceof Error ? error.message : "The post payload is invalid.",
+      error: error instanceof Error ? error.message : 'The post payload is invalid.',
     },
     { status: 400 }
   );
 }
 
-function normalizePostPayload<T extends { publishDate?: string; projectId?: string }>(
-  payload: T
-) {
+function normalizePostPayload<T extends { publishDate?: string; projectId?: string }>(payload: T) {
   const normalized: Record<string, unknown> = { ...payload };
 
-  if ("publishDate" in payload) {
-    normalized.publishDate = payload.publishDate
-      ? new Date(payload.publishDate)
-      : null;
+  if ('publishDate' in payload) {
+    normalized.publishDate = payload.publishDate ? new Date(payload.publishDate) : null;
   }
 
-  if ("projectId" in payload) {
+  if ('projectId' in payload) {
     normalized.projectId = payload.projectId || null;
   }
 
@@ -41,14 +32,11 @@ export async function GET() {
     const posts = await getBlogPosts();
 
     return NextResponse.json({
-      message: "Posts fetched successfully",
+      message: 'Posts fetched successfully',
       data: posts,
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to fetch posts" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
   }
 }
 
@@ -71,16 +59,13 @@ export async function POST(req: Request) {
 
     return NextResponse.json(
       {
-        message: "Post created successfully",
+        message: 'Post created successfully',
         data: formatBlogPost(post.toObject()),
       },
       { status: 201 }
     );
   } catch {
-    return NextResponse.json(
-      { error: "Failed to create post" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to create post' }, { status: 500 });
   }
 }
 
@@ -102,14 +87,11 @@ export async function PATCH(req: Request) {
     const posts = await BlogPost.find({ id: parsed.data.id });
 
     return NextResponse.json({
-      message: "Post updated successfully",
+      message: 'Post updated successfully',
       data: posts.map((post) => formatBlogPost(post.toObject())),
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to update post" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to update post' }, { status: 500 });
   }
 }
 
@@ -128,13 +110,10 @@ export async function DELETE(req: Request) {
     await BlogPost.deleteMany({ id: { $in: postIds } });
 
     return NextResponse.json({
-      message: "Posts deleted successfully",
+      message: 'Posts deleted successfully',
       data: postIds,
     });
   } catch {
-    return NextResponse.json(
-      { error: "Failed to delete posts" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: 'Failed to delete posts' }, { status: 500 });
   }
 }

@@ -1,8 +1,8 @@
-import "server-only";
+import 'server-only';
 
-import { BlogPost } from "@/types";
-import { connectToDB } from "@/lib/db";
-import BlogPostModel from "@/models/BlogPost.model";
+import { BlogPost } from '@/types';
+import { connectToDB } from '@/lib/db';
+import BlogPostModel from '@/models/BlogPost.model';
 
 type BlogPostDocument = {
   id: string;
@@ -10,7 +10,7 @@ type BlogPostDocument = {
   slug: string;
   excerpt?: string | null;
   content: string;
-  status: BlogPost["status"];
+  status: BlogPost['status'];
   publishDate?: Date | string | null;
   tags?: string[];
   featuredImageUrl?: string | null;
@@ -26,15 +26,15 @@ export function formatBlogPost(post: BlogPostDocument): BlogPost {
     id: post.id,
     title: post.title,
     slug: post.slug,
-    excerpt: post.excerpt ?? "",
+    excerpt: post.excerpt ?? '',
     content: post.content,
     status: post.status,
-    publishDate: post.publishDate ? new Date(post.publishDate).toISOString() : "",
+    publishDate: post.publishDate ? new Date(post.publishDate).toISOString() : '',
     tags: post.tags ?? [],
-    featuredImageUrl: post.featuredImageUrl ?? "",
-    projectId: post.projectId ?? "",
-    seoTitle: post.seoTitle ?? "",
-    seoDescription: post.seoDescription ?? "",
+    featuredImageUrl: post.featuredImageUrl ?? '',
+    projectId: post.projectId ?? '',
+    seoTitle: post.seoTitle ?? '',
+    seoDescription: post.seoDescription ?? '',
     createdAt: new Date(post.createdAt).toISOString(),
     updatedAt: new Date(post.updatedAt).toISOString(),
   };
@@ -43,9 +43,7 @@ export function formatBlogPost(post: BlogPostDocument): BlogPost {
 export async function getBlogPosts() {
   await connectToDB();
 
-  const posts = await BlogPostModel.find()
-    .sort({ updatedAt: -1 })
-    .lean<BlogPostDocument[]>();
+  const posts = await BlogPostModel.find().sort({ updatedAt: -1 }).lean<BlogPostDocument[]>();
 
   return posts.map(formatBlogPost);
 }

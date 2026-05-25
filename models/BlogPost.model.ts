@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 const BlogPostSchema = new Schema(
   {
@@ -27,7 +27,7 @@ const BlogPostSchema = new Schema(
 
     excerpt: {
       type: String,
-      default: "",
+      default: '',
       trim: true,
     },
 
@@ -38,8 +38,8 @@ const BlogPostSchema = new Schema(
 
     status: {
       type: String,
-      enum: ["Published", "Scheduled", "Draft"],
-      default: "Draft",
+      enum: ['Published', 'Scheduled', 'Draft'],
+      default: 'Draft',
       required: true,
     },
 
@@ -55,7 +55,7 @@ const BlogPostSchema = new Schema(
 
     featuredImageUrl: {
       type: String,
-      default: "",
+      default: '',
       trim: true,
     },
 
@@ -68,13 +68,13 @@ const BlogPostSchema = new Schema(
 
     seoTitle: {
       type: String,
-      default: "",
+      default: '',
       trim: true,
     },
 
     seoDescription: {
       type: String,
-      default: "",
+      default: '',
       trim: true,
     },
   },
@@ -84,5 +84,4 @@ const BlogPostSchema = new Schema(
   }
 );
 
-export default mongoose.models.BlogPost ||
-  mongoose.model("BlogPost", BlogPostSchema);
+export default mongoose.models.BlogPost || mongoose.model('BlogPost', BlogPostSchema);

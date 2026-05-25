@@ -1,7 +1,7 @@
-import { queryOptions } from "@tanstack/react-query";
-import { BlogPost } from "@/types";
-import { ApiError } from "@/lib/api-error";
-import { PostFormValues } from "@/lib/validations/post";
+import { queryOptions } from '@tanstack/react-query';
+import { BlogPost } from '@/types';
+import { ApiError } from '@/lib/api-error';
+import { PostFormValues } from '@/lib/validations/post';
 
 type ApiResponse<T> = {
   data?: T;
@@ -13,20 +13,20 @@ async function parseResponse<T>(response: Response): Promise<T> {
   const payload = (await response.json().catch(() => ({}))) as ApiResponse<T>;
 
   if (!response.ok) {
-    throw new ApiError(payload.error || "Post request failed.", response.status);
+    throw new ApiError(payload.error || 'Post request failed.', response.status);
   }
 
   return payload.data as T;
 }
 
 export const postKeys = {
-  all: ["posts"] as const,
-  lists: () => [...postKeys.all, "list"] as const,
+  all: ['posts'] as const,
+  lists: () => [...postKeys.all, 'list'] as const,
   list: () => [...postKeys.lists()] as const,
 };
 
 export async function fetchPosts(): Promise<BlogPost[]> {
-  const response = await fetch("/api/posts");
+  const response = await fetch('/api/posts');
 
   return parseResponse<BlogPost[]>(response);
 }
@@ -39,9 +39,9 @@ export const postsQueryOptions = () =>
   });
 
 export async function createPost(data: PostFormValues): Promise<BlogPost> {
-  const response = await fetch("/api/posts", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/posts', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 
@@ -55,9 +55,9 @@ export async function updatePost({
   id: string;
   updates: Partial<PostFormValues>;
 }): Promise<BlogPost[]> {
-  const response = await fetch("/api/posts", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/posts', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id, updates }),
   });
 
@@ -65,9 +65,9 @@ export async function updatePost({
 }
 
 export async function deletePosts(ids: string[]): Promise<string[]> {
-  const response = await fetch("/api/posts", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/posts', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids }),
   });
 

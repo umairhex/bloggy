@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { Schema } from 'mongoose';
 
 const ProjectSchema = new Schema(
   {
@@ -9,8 +9,8 @@ const ProjectSchema = new Schema(
 
     category: {
       type: String,
-      enum: ["production", "staging", "development"],
-      default: "development",
+      enum: ['production', 'staging', 'development'],
+      default: 'development',
     },
 
     isArchived: {
@@ -20,8 +20,8 @@ const ProjectSchema = new Schema(
 
     connectionStatus: {
       type: String,
-      enum: ["untested", "connected", "failed"],
-      default: "untested",
+      enum: ['untested', 'connected', 'failed'],
+      default: 'untested',
     },
 
     createdAt: {
@@ -32,5 +32,4 @@ const ProjectSchema = new Schema(
   { versionKey: false }
 );
 
-export default mongoose.models.Project ||
-  mongoose.model("Project", ProjectSchema);
+export default mongoose.models.Project || mongoose.model('Project', ProjectSchema);

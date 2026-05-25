@@ -1,26 +1,26 @@
-import React from "react";
-import StatCard from "./StatCard";
-import { getBlogPosts } from "@/lib/posts/server";
+import React from 'react';
+import StatCard from './StatCard';
+import { getBlogPosts } from '@/lib/posts/server';
 
 export default async function StatsGrid() {
   const posts = await getBlogPosts();
-  const published = posts.filter((post) => post.status === "Published").length;
-  const scheduled = posts.filter((post) => post.status === "Scheduled").length;
-  const drafts = posts.filter((post) => post.status === "Draft").length;
+  const published = posts.filter((post) => post.status === 'Published').length;
+  const scheduled = posts.filter((post) => post.status === 'Scheduled').length;
+  const drafts = posts.filter((post) => post.status === 'Draft').length;
 
   const stats = [
-    { label: "Total posts", value: String(posts.length), delta: `${drafts} drafts` },
-    { label: "Published", value: String(published), delta: "Live content" },
-    { label: "Scheduled", value: String(scheduled), delta: "Queued posts" },
+    { label: 'Total posts', value: String(posts.length), delta: `${drafts} drafts` },
+    { label: 'Published', value: String(published), delta: 'Live content' },
+    { label: 'Scheduled', value: String(scheduled), delta: 'Queued posts' },
     {
-      label: "Avg read time",
+      label: 'Avg read time',
       value: posts.length
         ? `${Math.max(
             1,
             Math.round(
               posts.reduce((total, post) => {
                 const words = post.content
-                  .replace(/<[^>]+>/g, " ")
+                  .replace(/<[^>]+>/g, ' ')
                   .trim()
                   .split(/\s+/)
                   .filter(Boolean).length;
@@ -29,8 +29,8 @@ export default async function StatsGrid() {
               }, 0) / posts.length
             )
           )}m`
-        : "0m",
-      delta: "Across all posts",
+        : '0m',
+      delta: 'Across all posts',
     },
   ];
 

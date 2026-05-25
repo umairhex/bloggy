@@ -1,7 +1,7 @@
-import { queryOptions } from "@tanstack/react-query";
-import { Project } from "@/types";
-import { ProjectFormValues } from "@/lib/validations/project";
-import { ApiError } from "@/lib/api-error";
+import { queryOptions } from '@tanstack/react-query';
+import { Project } from '@/types';
+import { ProjectFormValues } from '@/lib/validations/project';
+import { ApiError } from '@/lib/api-error';
 
 type ApiResponse<T> = {
   data?: T;
@@ -13,23 +13,20 @@ async function parseResponse<T>(response: Response): Promise<T> {
   const payload = (await response.json().catch(() => ({}))) as ApiResponse<T>;
 
   if (!response.ok) {
-    throw new ApiError(
-      payload.error || "Project request failed.",
-      response.status
-    );
+    throw new ApiError(payload.error || 'Project request failed.', response.status);
   }
 
   return payload.data as T;
 }
 
 export const projectKeys = {
-  all: ["projects"] as const,
-  lists: () => [...projectKeys.all, "list"] as const,
+  all: ['projects'] as const,
+  lists: () => [...projectKeys.all, 'list'] as const,
   list: () => [...projectKeys.lists()] as const,
 };
 
 export async function fetchProjects(): Promise<Project[]> {
-  const response = await fetch("/api/projects");
+  const response = await fetch('/api/projects');
 
   return parseResponse<Project[]>(response);
 }
@@ -42,9 +39,9 @@ export const projectsQueryOptions = () =>
   });
 
 export async function createProject(data: ProjectFormValues): Promise<Project> {
-  const response = await fetch("/api/projects", {
-    method: "POST",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/projects', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify(data),
   });
 
@@ -56,11 +53,11 @@ export async function updateProject({
   updates,
 }: {
   id: string;
-  updates: Partial<ProjectFormValues> & Pick<Partial<Project>, "isArchived" | "connectionStatus">;
+  updates: Partial<ProjectFormValues> & Pick<Partial<Project>, 'isArchived' | 'connectionStatus'>;
 }): Promise<Project[]> {
-  const response = await fetch("/api/projects", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/projects', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ id, updates }),
   });
 
@@ -72,11 +69,11 @@ export async function bulkUpdateProjects({
   updates,
 }: {
   ids: string[];
-  updates: Partial<ProjectFormValues> & Pick<Partial<Project>, "isArchived" | "connectionStatus">;
+  updates: Partial<ProjectFormValues> & Pick<Partial<Project>, 'isArchived' | 'connectionStatus'>;
 }): Promise<Project[]> {
-  const response = await fetch("/api/projects", {
-    method: "PATCH",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/projects', {
+    method: 'PATCH',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids, updates }),
   });
 
@@ -84,9 +81,9 @@ export async function bulkUpdateProjects({
 }
 
 export async function deleteProjects(ids: string[]): Promise<string[]> {
-  const response = await fetch("/api/projects", {
-    method: "DELETE",
-    headers: { "Content-Type": "application/json" },
+  const response = await fetch('/api/projects', {
+    method: 'DELETE',
+    headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ ids }),
   });
 

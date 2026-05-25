@@ -1,42 +1,42 @@
-"use client";
+'use client';
 
-import React, { useState, useCallback } from "react";
-import { useEditor, EditorContent } from "@tiptap/react";
-import StarterKit from "@tiptap/starter-kit";
-import Underline from "@tiptap/extension-underline";
-import Link from "@tiptap/extension-link";
-import Placeholder from "@tiptap/extension-placeholder";
-import { PostStatus } from "@/types";
-import { Button } from "@/components/ui/button";
-import { toast } from "sonner";
-import { Save, Eye, FileText } from "lucide-react";
-import EditorToolbar from "./EditorToolbar";
-import EditorSidebar from "./EditorSidebar";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { projectsQueryOptions } from "@/lib/api/projects";
-import { createPost, postKeys, updatePost } from "@/lib/api/posts";
+import React, { useState, useCallback } from 'react';
+import { useEditor, EditorContent } from '@tiptap/react';
+import StarterKit from '@tiptap/starter-kit';
+import Underline from '@tiptap/extension-underline';
+import Link from '@tiptap/extension-link';
+import Placeholder from '@tiptap/extension-placeholder';
+import { PostStatus } from '@/types';
+import { Button } from '@/components/ui/button';
+import { toast } from 'sonner';
+import { Save, Eye, FileText } from 'lucide-react';
+import EditorToolbar from './EditorToolbar';
+import EditorSidebar from './EditorSidebar';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { projectsQueryOptions } from '@/lib/api/projects';
+import { createPost, postKeys, updatePost } from '@/lib/api/posts';
 
 function slugify(str: string): string {
   return str
     .toLowerCase()
     .trim()
-    .replace(/[^\w\s-]/g, "")
-    .replace(/[\s_-]+/g, "-")
-    .replace(/^-+|-+$/g, "");
+    .replace(/[^\w\s-]/g, '')
+    .replace(/[\s_-]+/g, '-')
+    .replace(/^-+|-+$/g, '');
 }
 
 export default function EditorForm() {
   const queryClient = useQueryClient();
-  const [title, setTitle] = useState("");
-  const [slug, setSlug] = useState("");
+  const [title, setTitle] = useState('');
+  const [slug, setSlug] = useState('');
   const [slugManuallyEdited, setSlugManuallyEdited] = useState(false);
-  const [status, setStatus] = useState<PostStatus>("Draft");
-  const [publishDate, setPublishDate] = useState("");
+  const [status, setStatus] = useState<PostStatus>('Draft');
+  const [publishDate, setPublishDate] = useState('');
   const [tags, setTags] = useState<string[]>([]);
-  const [featuredImageUrl, setFeaturedImageUrl] = useState("");
-  const [selectedProjectId, setSelectedProjectId] = useState("none");
-  const [seoTitle, setSeoTitle] = useState("");
-  const [seoDescription, setSeoDescription] = useState("");
+  const [featuredImageUrl, setFeaturedImageUrl] = useState('');
+  const [selectedProjectId, setSelectedProjectId] = useState('none');
+  const [seoTitle, setSeoTitle] = useState('');
+  const [seoDescription, setSeoDescription] = useState('');
   const [savedPostId, setSavedPostId] = useState<string | null>(null);
 
   const { data: projects = [] } = useQuery(projectsQueryOptions());
@@ -64,13 +64,13 @@ export default function EditorForm() {
       Underline,
       Link.configure({ openOnClick: false }),
       Placeholder.configure({
-        placeholder: "Start writing your post… use the toolbar above for formatting.",
+        placeholder: 'Start writing your post… use the toolbar above for formatting.',
       }),
     ],
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm max-w-none min-h-[420px] px-xl py-lg focus:outline-none text-ink leading-relaxed",
+          'prose prose-sm max-w-none min-h-[420px] px-xl py-lg focus:outline-none text-ink leading-relaxed',
       },
     },
     onUpdate: ({ editor }) => {
@@ -82,11 +82,11 @@ export default function EditorForm() {
   const handleSave = useCallback(
     async (saveStatus?: PostStatus) => {
       if (!title.trim()) {
-        toast.error("Please add a title before saving.");
+        toast.error('Please add a title before saving.');
         return;
       }
       if (!editor) {
-        toast.error("Editor is still loading. Try again in a moment.");
+        toast.error('Editor is still loading. Try again in a moment.');
         return;
       }
       setIsSaving(true);
@@ -99,13 +99,10 @@ export default function EditorForm() {
         excerpt: plainText.slice(0, 220),
         content,
         status: effectiveStatus,
-        publishDate:
-          effectiveStatus === "Published"
-            ? new Date().toISOString()
-            : publishDate,
+        publishDate: effectiveStatus === 'Published' ? new Date().toISOString() : publishDate,
         tags,
         featuredImageUrl,
-        projectId: selectedProjectId === "none" ? "" : selectedProjectId,
+        projectId: selectedProjectId === 'none' ? '' : selectedProjectId,
         seoTitle,
         seoDescription,
       };
@@ -120,7 +117,7 @@ export default function EditorForm() {
           await createPostMutation.mutateAsync(postPayload);
         }
       } catch (error) {
-        toast.error(error instanceof Error ? error.message : "Could not save post.");
+        toast.error(error instanceof Error ? error.message : 'Could not save post.');
         setIsSaving(false);
         return;
       }
@@ -130,7 +127,7 @@ export default function EditorForm() {
         Scheduled: `"${title}" scheduled for publishing.`,
         Published: `"${title}" published successfully!`,
       };
-      toast.success(messages[effectiveStatus] ?? "Saved.");
+      toast.success(messages[effectiveStatus] ?? 'Saved.');
       if (saveStatus) setStatus(saveStatus);
       setIsSaving(false);
     },
@@ -153,9 +150,7 @@ export default function EditorForm() {
 
   return (
     <div className="flex flex-1 overflow-hidden h-full">
-      {/* FIX: Added min-h-0 to allow this column to shrink and trigger scrolling */}
       <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-
         <div className="px-xl pt-lg pb-base border-b border-hairline bg-canvas shrink-0">
           <input
             id="post-title"
@@ -203,7 +198,6 @@ export default function EditorForm() {
 
         <EditorToolbar editor={editor} />
 
-        {/* FIX: Added min-h-0 to explicitly allow the Tiptap editor container to scroll */}
         <div className="flex-1 overflow-y-auto min-h-0">
           <EditorContent editor={editor} className="h-full" />
         </div>
@@ -221,7 +215,7 @@ export default function EditorForm() {
               variant="ghost"
               size="sm"
               className="h-7 gap-xs text-xs text-body hover:text-ink"
-              onClick={() => handleSave("Draft")}
+              onClick={() => handleSave('Draft')}
               disabled={isSaving}
             >
               <Save size={13} />

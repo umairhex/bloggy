@@ -1,15 +1,14 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { navItems } from "../_constants";
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { navItems } from '../_constants';
 
 export default function UserFooter() {
   const pathname = usePathname();
 
-
-  const configSection = navItems.find((s) => s.label === "Configuration");
+  const configSection = navItems.find((s) => s.label === 'Configuration');
 
   if (!configSection || !configSection.links.length) {
     return null;
@@ -21,11 +20,10 @@ export default function UserFooter() {
   return (
     <div className="px-md py-md border-t border-hairline">
       <Link
-        href={href || "#"}
+        href={href || '#'}
         className={`w-full flex items-center gap-md px-md py-sm rounded-sm text-sm transition-colors
-          ${isActive
-            ? "bg-canvas text-ink font-medium"
-            : "text-body hover:bg-canvas hover:text-ink"
+          ${
+            isActive ? 'bg-canvas text-ink font-medium' : 'text-body hover:bg-canvas hover:text-ink'
           }`}
       >
         <Icon size={15} />

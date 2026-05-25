@@ -1,22 +1,22 @@
-"use client";
+'use client';
 
-import React, { useState } from "react";
-import { Project, PostStatus } from "@/types";
-import { Label } from "@/components/ui/label";
-import { Input } from "@/components/ui/input";
-import { Textarea } from "@/components/ui/textarea";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
+import React, { useState } from 'react';
+import { Project, PostStatus } from '@/types';
+import { Label } from '@/components/ui/label';
+import { Input } from '@/components/ui/input';
+import { Textarea } from '@/components/ui/textarea';
+import { Separator } from '@/components/ui/separator';
+import { Badge } from '@/components/ui/badge';
+import { Button } from '@/components/ui/button';
 import {
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from "@/components/ui/select";
-import { Database, X, ImageIcon, Search, Tag } from "lucide-react";
-import { ScrollArea } from "@/components/ui/scroll-area";
+} from '@/components/ui/select';
+import { Database, X, ImageIcon, Search, Tag } from 'lucide-react';
+import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface EditorSidebarProps {
   status: PostStatus;
@@ -53,18 +53,18 @@ export default function EditorSidebar({
   setSelectedProjectId,
   projects,
 }: EditorSidebarProps) {
-  const [tagInput, setTagInput] = useState("");
+  const [tagInput, setTagInput] = useState('');
 
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === "Enter" || e.key === ",") && tagInput.trim()) {
+    if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
       e.preventDefault();
-      const newTag = tagInput.trim().replace(/,$/, "");
+      const newTag = tagInput.trim().replace(/,$/, '');
       if (newTag && !tags.includes(newTag)) {
         setTags([...tags, newTag]);
       }
-      setTagInput("");
+      setTagInput('');
     }
-    if (e.key === "Backspace" && !tagInput && tags.length > 0) {
+    if (e.key === 'Backspace' && !tagInput && tags.length > 0) {
       setTags(tags.slice(0, -1));
     }
   };
@@ -78,14 +78,18 @@ export default function EditorSidebar({
   return (
     <ScrollArea className="h-full">
       <aside className="w-72 h-full shrink-0 border-l border-hairline bg-surface-soft flex flex-col overflow-y-auto">
-
         <section className="p-base border-b border-hairline space-y-base">
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted">Publishing</h3>
 
           <div className="space-y-xs px-1">
-            <Label htmlFor="post-status" className="text-xs font-medium text-body">Status</Label>
+            <Label htmlFor="post-status" className="text-xs font-medium text-body">
+              Status
+            </Label>
             <Select value={status} onValueChange={(v) => setStatus(v as PostStatus)}>
-              <SelectTrigger id="post-status" className="h-9 px-3 text-sm bg-canvas border-hairline">
+              <SelectTrigger
+                id="post-status"
+                className="h-9 px-3 text-sm bg-canvas border-hairline"
+              >
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
@@ -96,9 +100,11 @@ export default function EditorSidebar({
             </Select>
           </div>
 
-          {status === "Scheduled" && (
+          {status === 'Scheduled' && (
             <div className="space-y-xs">
-              <Label htmlFor="publish-date" className="text-xs font-medium text-body">Publish date</Label>
+              <Label htmlFor="publish-date" className="text-xs font-medium text-body">
+                Publish date
+              </Label>
               <Input
                 id="publish-date"
                 type="datetime-local"
@@ -119,11 +125,11 @@ export default function EditorSidebar({
             <Label htmlFor="project-select" className="text-xs font-medium text-body">
               Linked Project
             </Label>
-            <Select
-              value={selectedProjectId}
-              onValueChange={setSelectedProjectId}
-            >
-              <SelectTrigger id="project-select" className="px-3 h-9 text-sm bg-canvas border-hairline">
+            <Select value={selectedProjectId} onValueChange={setSelectedProjectId}>
+              <SelectTrigger
+                id="project-select"
+                className="px-3 h-9 text-sm bg-canvas border-hairline"
+              >
                 <div className="flex items-center gap-xs overflow-hidden">
                   <Database size={13} className="text-primary shrink-0" />
                   <SelectValue placeholder="Select a project…" />
@@ -144,12 +150,15 @@ export default function EditorSidebar({
                       <div className="flex items-center gap-xs">
                         <span className="truncate">{proj.name}</span>
                         {proj.category && (
-                          <span className={`text-[9px] font-bold uppercase px-1.5 py-px rounded-full border shrink-0 ${proj.category === "production"
-                            ? "text-plus bg-plus/10 border-plus/20"
-                            : proj.category === "staging"
-                              ? "text-amber-800 bg-amber-50 border-amber-200"
-                              : "text-muted bg-surface-strong border-hairline"
-                            }`}>
+                          <span
+                            className={`text-[9px] font-bold uppercase px-1.5 py-px rounded-full border shrink-0 ${
+                              proj.category === 'production'
+                                ? 'text-plus bg-plus/10 border-plus/20'
+                                : proj.category === 'staging'
+                                  ? 'text-amber-800 bg-amber-50 border-amber-200'
+                                  : 'text-muted bg-surface-strong border-hairline'
+                            }`}
+                          >
                             {proj.category}
                           </span>
                         )}
@@ -161,10 +170,10 @@ export default function EditorSidebar({
             </Select>
             {activeProjects.length === 0 && (
               <p className="text-[10px] text-muted leading-tight">
-                Add projects in the{" "}
+                Add projects in the{' '}
                 <a href="/projects" className="text-primary underline-offset-2 hover:underline">
                   Projects workspace
-                </a>{" "}
+                </a>{' '}
                 to link them here.
               </p>
             )}
@@ -203,7 +212,7 @@ export default function EditorSidebar({
                 value={tagInput}
                 onChange={(e) => setTagInput(e.target.value)}
                 onKeyDown={handleTagKeyDown}
-                placeholder={tags.length === 0 ? "Type a tag, press Enter…" : "Add more…"}
+                placeholder={tags.length === 0 ? 'Type a tag, press Enter…' : 'Add more…'}
                 className="px-3 flex-1 min-w-16 text-xs bg-transparent outline-none text-ink placeholder:text-muted-soft"
               />
             </div>
@@ -231,13 +240,12 @@ export default function EditorSidebar({
             />
             {featuredImageUrl && (
               <div className="relative rounded-sm overflow-hidden border border-hairline h-24 bg-surface-strong">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={featuredImageUrl}
                   alt="Featured preview"
                   className="w-full h-full object-cover"
                   onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = "none";
+                    (e.target as HTMLImageElement).style.display = 'none';
                   }}
                 />
               </div>
@@ -251,7 +259,9 @@ export default function EditorSidebar({
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted">SEO</h3>
 
           <div className="space-y-xs">
-            <Label htmlFor="seo-title" className="text-xs font-medium text-body">Meta Title</Label>
+            <Label htmlFor="seo-title" className="text-xs font-medium text-body">
+              Meta Title
+            </Label>
             <Input
               id="seo-title"
               value={seoTitle}
@@ -264,7 +274,9 @@ export default function EditorSidebar({
           </div>
 
           <div className="space-y-xs">
-            <Label htmlFor="seo-desc" className="text-xs font-medium text-body">Meta Description</Label>
+            <Label htmlFor="seo-desc" className="text-xs font-medium text-body">
+              Meta Description
+            </Label>
             <Textarea
               id="seo-desc"
               value={seoDescription}

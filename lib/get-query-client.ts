@@ -1,6 +1,6 @@
-import { QueryClient } from "@tanstack/react-query";
-import { cache } from "react";
-import { ApiError } from "./api-error";
+import { QueryClient } from '@tanstack/react-query';
+import { cache } from 'react';
+import { ApiError } from './api-error';
 
 export const getQueryClient = cache(
   () =>

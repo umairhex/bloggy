@@ -1,14 +1,10 @@
-"use client";
+'use client';
 
-import { ReactNode, useState } from "react";
-import {
-  QueryCache,
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
-import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
-import { toast } from "sonner";
-import { ApiError } from "@/lib/api-error";
+import { ReactNode, useState } from 'react';
+import { QueryCache, QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+import { toast } from 'sonner';
+import { ApiError } from '@/lib/api-error';
 
 export default function Providers({ children }: { children: ReactNode }) {
   const [queryClient] = useState(
@@ -18,9 +14,7 @@ export default function Providers({ children }: { children: ReactNode }) {
           onError: (error, query) => {
             if (query.state.data !== undefined) {
               toast.error(
-                error instanceof Error
-                  ? error.message
-                  : "Could not refresh data in the background."
+                error instanceof Error ? error.message : 'Could not refresh data in the background.'
               );
             }
           },
@@ -44,7 +38,7 @@ export default function Providers({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       {children}
-      {process.env.NODE_ENV !== "production" && <ReactQueryDevtools />}
+      {process.env.NODE_ENV !== 'production' && <ReactQueryDevtools />}
     </QueryClientProvider>
   );
 }

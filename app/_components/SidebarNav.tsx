@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React from "react";
-import Link from "next/link";
-import { usePathname } from "next/navigation";
-import { Badge } from "@/components/ui/badge";
-import { navItems } from "../_constants";
+import React from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import { Badge } from '@/components/ui/badge';
+import { navItems } from '../_constants';
 
 export default function SidebarNav() {
   const pathname = usePathname();
@@ -12,7 +12,7 @@ export default function SidebarNav() {
   return (
     <div className="flex-1 px-sm py-sm overflow-y-auto">
       {navItems
-        .filter((section) => section.label !== "Configuration")
+        .filter((section) => section.label !== 'Configuration')
         .map((section) => (
           <div key={section.label} className="mb-md">
             <p className="text-xs uppercase tracking-wider text-muted font-semibold px-md mb-xs">
@@ -23,12 +23,12 @@ export default function SidebarNav() {
               return (
                 <Link
                   key={label}
-                  href={href || "#"}
+                  href={href || '#'}
                   className={`w-full flex items-center gap-md px-md py-sm rounded-sm text-sm mb-xs transition-colors
                     ${
                       isActive
-                        ? "bg-canvas text-ink font-medium"
-                        : "text-body hover:bg-canvas hover:text-ink"
+                        ? 'bg-canvas text-ink font-medium'
+                        : 'text-body hover:bg-canvas hover:text-ink'
                     }`}
                 >
                   <Icon size={15} />

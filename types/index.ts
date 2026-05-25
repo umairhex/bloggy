@@ -1,4 +1,4 @@
-import { ComponentType } from "react";
+import { ComponentType } from 'react';
 
 export interface NavLink {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -8,7 +8,6 @@ export interface NavLink {
   badge?: string;
   href?: string;
 }
-
 
 export interface NavSection {
   label: string;
@@ -21,7 +20,7 @@ export interface StatItem {
   delta: string;
 }
 
-export type PostStatus = "Published" | "Scheduled" | "Draft";
+export type PostStatus = 'Published' | 'Scheduled' | 'Draft';
 
 export interface BlogPost {
   id: string;
@@ -46,7 +45,7 @@ export interface Project {
   description?: string;
   mongodbUri: string;
   createdAt: string;
-  category?: "production" | "staging" | "development";
+  category?: 'production' | 'staging' | 'development';
   isArchived?: boolean;
-  connectionStatus?: "untested" | "connected" | "failed";
+  connectionStatus?: 'untested' | 'connected' | 'failed';
 }

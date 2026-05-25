@@ -1,4 +1,4 @@
-import React from "react";
+import React from 'react';
 
 export default function DashboardFooter() {
   return (
@@ -7,12 +7,8 @@ export default function DashboardFooter() {
         bloggy<span className="text-primary">.</span> — v1.0.0
       </p>
       <div className="flex gap-lg">
-        {["Help", "Changelog", "Privacy"].map((link) => (
-          <a
-            key={link}
-            href="#"
-            className="text-xs text-body hover:text-ink transition-colors"
-          >
+        {['Help', 'Changelog', 'Privacy'].map((link) => (
+          <a key={link} href="#" className="text-xs text-body hover:text-ink transition-colors">
             {link}
           </a>
         ))}
