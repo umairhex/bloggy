@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Suspense } from 'react';
 import DashboardShell from '@/app/_components/DashboardShell';
 import EditorForm from './_components/EditorForm';
 
@@ -11,7 +11,9 @@ export default function EditorPage() {
   return (
     <DashboardShell>
       <div className="flex h-full flex-1 flex-col overflow-hidden min-h-0">
-        <EditorForm />
+        <Suspense fallback={<div className="p-lg animate-pulse text-muted text-xs">Loading Editor...</div>}>
+          <EditorForm />
+        </Suspense>
       </div>
     </DashboardShell>
   );

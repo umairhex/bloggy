@@ -25,6 +25,8 @@ interface EditorSidebarProps {
   setPublishDate: (v: string) => void;
   tags: string[];
   setTags: (v: string[]) => void;
+  excerpt: string;
+  setExcerpt: (v: string) => void;
   featuredImageUrl: string;
   setFeaturedImageUrl: (v: string) => void;
   seoTitle: string;
@@ -43,6 +45,8 @@ export default function EditorSidebar({
   setPublishDate,
   tags,
   setTags,
+  excerpt,
+  setExcerpt,
   featuredImageUrl,
   setFeaturedImageUrl,
   seoTitle,
@@ -55,10 +59,33 @@ export default function EditorSidebar({
 }: EditorSidebarProps) {
   const [tagInput, setTagInput] = useState('');
 
+  console.log('EditorSidebar rendering with props:', {
+    tags,
+    excerpt,
+    featuredImageUrl,
+    seoTitle,
+    seoDescription
+  });
+
+  const handleTagChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const value = e.target.value;
+    if (value.includes(',')) {
+      const parts = value.split(',').map((p) => p.trim()).filter(Boolean);
+      const uniqueParts = Array.from(new Set(parts));
+      const newTags = uniqueParts.filter((t) => !tags.includes(t));
+      if (newTags.length > 0) {
+        setTags([...tags, ...newTags]);
+      }
+      setTagInput('');
+    } else {
+      setTagInput(value);
+    }
+  };
+
   const handleTagKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    if ((e.key === 'Enter' || e.key === ',') && tagInput.trim()) {
+    if (e.key === 'Enter' && tagInput.trim()) {
       e.preventDefault();
-      const newTag = tagInput.trim().replace(/,$/, '');
+      const newTag = tagInput.trim();
       if (newTag && !tags.includes(newTag)) {
         setTags([...tags, newTag]);
       }
@@ -210,13 +237,34 @@ export default function EditorSidebar({
               ))}
               <input
                 value={tagInput}
-                onChange={(e) => setTagInput(e.target.value)}
+                onChange={handleTagChange}
                 onKeyDown={handleTagKeyDown}
                 placeholder={tags.length === 0 ? 'Type a tag, press Enter…' : 'Add more…'}
                 className="px-3 flex-1 min-w-16 text-xs bg-transparent outline-none text-ink placeholder:text-muted-soft"
               />
             </div>
-            <p className="text-[10px] text-muted">Press Enter or comma to add</p>
+            <p className="text-[10px] text-muted">Press Enter or type/paste comma-separated tags</p>
+          </div>
+        </section>
+
+        <Separator className="bg-hairline" />
+
+        <section className="p-base border-b border-hairline space-y-base">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-muted">Excerpt</h3>
+
+          <div className="space-y-xs">
+            <Label htmlFor="post-excerpt" className="text-xs font-medium text-body">
+              Post Excerpt
+            </Label>
+            <Textarea
+              id="post-excerpt"
+              value={excerpt}
+              onChange={(e) => setExcerpt(e.target.value)}
+              placeholder="Brief summary (defaults to auto-generated from body)…"
+              className="text-xs bg-canvas border-hairline resize-none h-20 px-3 py-2 leading-relaxed"
+              maxLength={300}
+            />
+            <p className="text-[10px] text-muted text-right">{excerpt.length}/300</p>
           </div>
         </section>
 

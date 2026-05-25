@@ -344,7 +344,7 @@ export default function PublishingManager() {
 
         {statusTabs.map((status) => (
           <TabsContent key={status} value={status} className="mt-0 w-full min-w-0">
-            <Card className="rounded-md border border-hairline bg-canvas py-0 shadow-sm w-full">
+            <Card className="rounded-md border border-hairline bg-canvas py-0 shadow-sm w-full overflow-hidden">
               {filteredPosts.length === 0 ? (
                 <div className="flex w-full min-h-[300px] flex-col items-center justify-center p-8 text-center bg-canvas">
                   <div className="flex flex-col items-center w-full max-w-[280px]">
@@ -425,26 +425,40 @@ export default function PublishingManager() {
                           <TableCell>
                             <div className="flex justify-end gap-xs">
                               <Button
+                                asChild
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 rounded-full"
+                                className="h-8 w-8 rounded-full text-body hover:text-ink cursor-pointer"
+                                title="Edit post"
+                              >
+                                <Link href={`/editor?id=${post.id}`}>
+                                  <Edit3 size={14} />
+                                </Link>
+                              </Button>
+                              <Button
+                                variant="ghost"
+                                size="icon"
+                                className="h-8 w-8 rounded-full text-body hover:text-ink cursor-pointer"
                                 onClick={() => handleStatusChange(post, 'Published')}
+                                title="Publish post"
                               >
                                 <Send size={14} />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 rounded-full"
+                                className="h-8 w-8 rounded-full text-body hover:text-ink cursor-pointer"
                                 onClick={() => handleStatusChange(post, 'Draft')}
+                                title="Move to drafts"
                               >
                                 <CheckCircle2 size={14} />
                               </Button>
                               <Button
                                 variant="ghost"
                                 size="icon"
-                                className="h-8 w-8 rounded-full text-primary-error-text"
+                                className="h-8 w-8 rounded-full text-primary-error-text cursor-pointer"
                                 onClick={() => openDeleteDialog([post.id])}
+                                title="Delete post"
                               >
                                 <Trash2 size={14} />
                               </Button>

@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ZodError } from 'zod';
 import { connectToDB, getProjectConnection, isLocalMongoUri } from '@/lib/db';
 import BlogPost, { getBlogPostModel } from '@/models/BlogPost.model';
 import Project from '@/models/Project.model';
@@ -6,9 +7,22 @@ import { formatBlogPost, getBlogPosts } from '@/lib/posts/server';
 import { createPostSchema, deletePostsSchema, updatePostSchema } from '@/lib/validations/post';
 
 function validationError(error: unknown) {
+  let message = 'The post payload is invalid.';
+  if (error instanceof ZodError) {
+    message = error.issues
+      .map((issue) => {
+        const fieldName = issue.path.join('.');
+        const capitalizedField = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+        return `${capitalizedField}: ${issue.message}`;
+      })
+      .join(' | ');
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
+
   return NextResponse.json(
     {
-      error: error instanceof Error ? error.message : 'The post payload is invalid.',
+      error: message,
     },
     { status: 400 }
   );

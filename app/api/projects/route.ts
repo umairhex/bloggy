@@ -1,4 +1,5 @@
 import { NextResponse } from 'next/server';
+import { ZodError } from 'zod';
 import { connectToDB } from '@/lib/db';
 import Project from '@/models/Project.model';
 import { formatProject, getProjects } from '@/lib/projects/server';
@@ -10,9 +11,22 @@ import {
 } from '@/lib/validations/project';
 
 function validationError(error: unknown) {
+  let message = 'The project payload is invalid.';
+  if (error instanceof ZodError) {
+    message = error.issues
+      .map((issue) => {
+        const fieldName = issue.path.join('.');
+        const capitalizedField = fieldName.charAt(0).toUpperCase() + fieldName.slice(1);
+        return `${capitalizedField}: ${issue.message}`;
+      })
+      .join(' | ');
+  } else if (error instanceof Error) {
+    message = error.message;
+  }
+
   return NextResponse.json(
     {
-      error: error instanceof Error ? error.message : 'The project payload is invalid.',
+      error: message,
     },
     { status: 400 }
   );

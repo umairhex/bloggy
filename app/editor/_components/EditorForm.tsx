@@ -1,6 +1,7 @@
 'use client';
 
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useEffect } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useEditor, EditorContent } from '@tiptap/react';
 import StarterKit from '@tiptap/starter-kit';
 import Underline from '@tiptap/extension-underline';
@@ -14,7 +15,7 @@ import EditorToolbar from './EditorToolbar';
 import EditorSidebar from './EditorSidebar';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectsQueryOptions } from '@/lib/api/projects';
-import { createPost, postKeys, updatePost } from '@/lib/api/posts';
+import { createPost, postKeys, updatePost, postsQueryOptions } from '@/lib/api/posts';
 
 function slugify(str: string): string {
   return str
@@ -33,6 +34,7 @@ export default function EditorForm() {
   const [status, setStatus] = useState<PostStatus>('Draft');
   const [publishDate, setPublishDate] = useState('');
   const [tags, setTags] = useState<string[]>([]);
+  const [excerpt, setExcerpt] = useState('');
   const [featuredImageUrl, setFeaturedImageUrl] = useState('');
   const [selectedProjectId, setSelectedProjectId] = useState('none');
   const [seoTitle, setSeoTitle] = useState('');
@@ -43,12 +45,18 @@ export default function EditorForm() {
   const { data: projects = [] } = useQuery(projectsQueryOptions());
   const [isSaving, setIsSaving] = useState(false);
   const [wordCount, setWordCount] = useState(0);
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const postId = searchParams.get('id');
+
+  const { data: posts = [] } = useQuery(postsQueryOptions());
 
   const createPostMutation = useMutation({
     mutationFn: createPost,
     onSuccess: (post) => {
       setSavedPostId(post.id);
       queryClient.invalidateQueries({ queryKey: postKeys.all });
+      router.replace(`/editor?id=${post.id}`);
     },
   });
 
@@ -80,6 +88,48 @@ export default function EditorForm() {
     },
   });
 
+  useEffect(() => {
+    if (editor) {
+      if (postId) {
+        if (savedPostId !== postId && posts.length > 0) {
+          const post = posts.find((p) => p.id === postId);
+          if (post) {
+            console.log('EditorForm loaded post:', post);
+            setTitle(post.title);
+            setSlug(post.slug);
+            setExcerpt(post.excerpt || '');
+            setStatus(post.status);
+            setPublishDate(post.publishDate || '');
+            setTags(post.tags || []);
+            setFeaturedImageUrl(post.featuredImageUrl || '');
+            setSelectedProjectId(post.projectId || 'none');
+            setSeoTitle(post.seoTitle || '');
+            setSeoDescription(post.seoDescription || '');
+            setSavedPostId(post.id);
+            setSlugManuallyEdited(true);
+            editor.commands.setContent(post.content);
+          }
+        }
+      } else {
+        if (savedPostId !== null && !createPostMutation.isSuccess) {
+          setTitle('');
+          setSlug('');
+          setExcerpt('');
+          setStatus('Draft');
+          setPublishDate('');
+          setTags([]);
+          setFeaturedImageUrl('');
+          setSelectedProjectId('none');
+          setSeoTitle('');
+          setSeoDescription('');
+          setSavedPostId(null);
+          setSlugManuallyEdited(false);
+          editor.commands.setContent('');
+        }
+      }
+    }
+  }, [postId, posts, savedPostId, editor, createPostMutation.isSuccess]);
+
   const handleSave = useCallback(
     async (saveStatus?: PostStatus) => {
       if (!title.trim()) {
@@ -97,7 +147,7 @@ export default function EditorForm() {
       const postPayload = {
         title,
         slug: slug || slugify(title),
-        excerpt: plainText.slice(0, 220),
+        excerpt: excerpt.trim() || plainText.slice(0, 220),
         content,
         status: effectiveStatus,
         publishDate: effectiveStatus === 'Published' ? new Date().toISOString() : publishDate,
@@ -135,6 +185,7 @@ export default function EditorForm() {
     [
       createPostMutation,
       editor,
+      excerpt,
       featuredImageUrl,
       publishDate,
       savedPostId,
@@ -224,40 +275,54 @@ export default function EditorForm() {
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 gap-xs text-xs text-body hover:text-ink"
-              onClick={() => handleSave('Draft')}
-              disabled={isSaving}
-            >
-              <Save size={13} />
-              <span className="hidden sm:inline">Save draft</span>
-              <span className="sm:hidden">Draft</span>
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-xs text-xs text-body hover:text-ink"
-              onClick={() => handleSave(status)}
-              disabled={isSaving}
-            >
-              <Save size={13} />
-              <span className="hidden sm:inline">Save {status.toLowerCase()}</span>
-              <span className="sm:hidden">{status.charAt(0)}</span>
-            </Button>
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="h-7 gap-xs text-xs text-body hover:text-ink"
+              className="h-7 gap-xs text-xs text-body hover:text-ink cursor-pointer"
             >
               <Eye size={13} />
               <span className="hidden sm:inline">Preview</span>
             </Button>
+
+            {status !== 'Draft' && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="h-7 gap-xs text-xs text-body hover:text-ink cursor-pointer"
+                onClick={() => handleSave('Draft')}
+                disabled={isSaving}
+              >
+                <Save size={13} />
+                <span className="hidden sm:inline">Save as draft</span>
+                <span className="sm:hidden">Draft</span>
+              </Button>
+            )}
+
+            <Button
+              type="button"
+              variant="default"
+              size="sm"
+              className="h-7 gap-xs text-xs font-semibold bg-primary hover:bg-primary-active text-white rounded-sm px-3 cursor-pointer shadow-sm transition-colors duration-150"
+              onClick={() => handleSave(status)}
+              disabled={isSaving}
+            >
+              <Save size={13} />
+              <span>
+                {status === 'Published'
+                  ? savedPostId
+                    ? 'Update post'
+                    : 'Publish post'
+                  : status === 'Scheduled'
+                    ? savedPostId
+                      ? 'Update schedule'
+                      : 'Schedule post'
+                    : 'Save draft'}
+              </span>
+            </Button>
+
             <Button
               type="button"
               variant="ghost"
               size="sm"
-              className="h-7 gap-xs text-xs text-body hover:text-ink md:hidden"
+              className="h-7 gap-xs text-xs text-body hover:text-ink md:hidden cursor-pointer"
               onClick={() => setSidebarOpen(!sidebarOpen)}
               aria-label="Toggle post settings"
             >
@@ -280,6 +345,8 @@ export default function EditorForm() {
           setPublishDate={setPublishDate}
           tags={tags}
           setTags={setTags}
+          excerpt={excerpt}
+          setExcerpt={setExcerpt}
           featuredImageUrl={featuredImageUrl}
           setFeaturedImageUrl={setFeaturedImageUrl}
           seoTitle={seoTitle}

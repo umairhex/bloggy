@@ -86,9 +86,15 @@ export const BlogPostSchema = new Schema(
 
 export function getBlogPostModel(connection?: mongoose.Connection) {
   if (connection) {
+    if (process.env.NODE_ENV === 'development') {
+      delete connection.models.BlogPost;
+    }
     return connection.models.BlogPost || connection.model('BlogPost', BlogPostSchema);
   }
 
+  if (process.env.NODE_ENV === 'development') {
+    delete mongoose.models.BlogPost;
+  }
   return mongoose.models.BlogPost || mongoose.model('BlogPost', BlogPostSchema);
 }
 
