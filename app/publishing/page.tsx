@@ -6,7 +6,7 @@ import { postsQueryOptions } from '@/lib/api/posts';
 import { getBlogPosts } from '@/lib/posts/server';
 
 export const metadata = {
-  title: 'Publishing — bloggy.',
+  title: 'Publishing',
   description: 'Review, schedule, and publish workspace content.',
 };
 

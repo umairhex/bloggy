@@ -6,7 +6,7 @@ import { projectsQueryOptions } from '@/lib/api/projects';
 import { getProjects } from '@/lib/projects/server';
 
 export const metadata = {
-  title: 'Projects — bloggy.',
+  title: 'Projects',
   description: 'Manage your content workspace projects and databases.',
 };
 

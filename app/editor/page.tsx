@@ -3,7 +3,7 @@ import DashboardShell from '@/app/_components/DashboardShell';
 import EditorForm from './_components/EditorForm';
 
 export const metadata = {
-  title: 'Editor — Bloggy',
+  title: 'Editor',
   description: 'Write and publish blog posts in the Bloggy content workspace.',
 };
 
