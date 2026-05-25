@@ -130,6 +130,16 @@ export default function EditorForm() {
     }
   }, [postId, posts, savedPostId, editor, createPostMutation.isSuccess]);
 
+  useEffect(() => {
+    const handleToggleSidebar = () => {
+      setSidebarOpen((open) => !open);
+    };
+    window.addEventListener('toggle-editor-sidebar', handleToggleSidebar);
+    return () => {
+      window.removeEventListener('toggle-editor-sidebar', handleToggleSidebar);
+    };
+  }, []);
+
   const handleSave = useCallback(
     async (saveStatus?: PostStatus) => {
       if (!title.trim()) {
@@ -356,6 +366,7 @@ export default function EditorForm() {
           selectedProjectId={selectedProjectId}
           setSelectedProjectId={setSelectedProjectId}
           projects={projects}
+          onClose={() => setSidebarOpen(false)}
         />
       </div>
     </div>

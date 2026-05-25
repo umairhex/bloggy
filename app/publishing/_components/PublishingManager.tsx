@@ -213,7 +213,7 @@ export default function PublishingManager() {
     return (
       <div className="space-y-lg">
         <div className="h-28 rounded-md border border-hairline bg-surface-soft animate-pulse" />
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-md">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-md">
           {Array.from({ length: 4 }).map((_, i) => (
             <div
               key={i}
@@ -268,7 +268,7 @@ export default function PublishingManager() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-md md:grid-cols-2 xl:grid-cols-4 shrink-0 ">
+      <div className="grid grid-cols-2 gap-md lg:grid-cols-4 shrink-0">
         <Card size="sm" className="rounded-md border border-hairline bg-canvas shadow-sm">
           <CardHeader>
             <CardDescription>Total queue</CardDescription>
@@ -370,7 +370,7 @@ export default function PublishingManager() {
                   </div>
                 </div>
               ) : (
-                <div className="block w-full overflow-x-auto rounded-md border border-hairline">
+                <div className="w-full">
                   <Table className="w-full min-w-[800px]">
                     <TableHeader className="bg-surface-soft/50">
                       <TableRow className="hover:bg-transparent border-b border-hairline">

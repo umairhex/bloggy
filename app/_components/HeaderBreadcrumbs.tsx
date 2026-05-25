@@ -21,7 +21,9 @@ export default function HeaderBreadcrumbs() {
 
   return (
     <p className="truncate text-sm text-body">
-      Dashboard <span className="text-hairline"> › </span>{' '}
+      <span className="hidden sm:inline">
+        Dashboard <span className="text-hairline"> › </span>{' '}
+      </span>
       <span className="text-ink font-semibold">{label}</span>
     </p>
   );

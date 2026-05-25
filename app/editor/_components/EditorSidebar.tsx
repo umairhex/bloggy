@@ -36,6 +36,7 @@ interface EditorSidebarProps {
   selectedProjectId: string;
   setSelectedProjectId: (v: string) => void;
   projects: Project[];
+  onClose?: () => void;
 }
 
 export default function EditorSidebar({
@@ -56,6 +57,7 @@ export default function EditorSidebar({
   selectedProjectId,
   setSelectedProjectId,
   projects,
+  onClose,
 }: EditorSidebarProps) {
   const [tagInput, setTagInput] = useState('');
 
@@ -103,9 +105,23 @@ export default function EditorSidebar({
   const activeProjects = projects.filter((p) => !p.isArchived);
 
   return (
-    <ScrollArea className="h-full">
-      <aside className="w-72 h-full shrink-0 border-l border-hairline bg-surface-soft flex flex-col overflow-y-auto">
-        <section className="p-base border-b border-hairline space-y-base">
+    <aside className="w-full h-full bg-surface-soft flex flex-col overflow-y-auto">
+      {onClose && (
+        <div className="flex items-center justify-between p-base border-b border-hairline md:hidden shrink-0">
+          <span className="text-sm font-semibold text-ink">Post settings</span>
+          <Button
+            type="button"
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8 rounded-full hover:bg-surface-strong text-body hover:text-ink cursor-pointer"
+            onClick={onClose}
+            aria-label="Close settings"
+          >
+            <X size={16} />
+          </Button>
+        </div>
+      )}
+      <section className="p-base border-b border-hairline space-y-base">
           <h3 className="text-xs font-bold uppercase tracking-wider text-muted">Publishing</h3>
 
           <div className="space-y-xs px-1">
@@ -346,7 +362,6 @@ export default function EditorSidebar({
             Discard draft
           </Button>
         </div>
-      </aside>
-    </ScrollArea>
+    </aside>
   );
 }

@@ -2,7 +2,7 @@ import React from 'react';
 
 export default function StatsGridSkeleton() {
   return (
-    <div className="grid grid-cols-4 gap-md animate-pulse">
+    <div className="grid grid-cols-2 gap-md lg:grid-cols-4 animate-pulse">
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}

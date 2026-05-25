@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import { Button } from '@/components/ui/button';
 import { ModeToggle } from '@/components/ui/ModeToggle';
-import { Plus, Settings } from 'lucide-react';
+import { Plus, Settings, SlidersHorizontal } from 'lucide-react';
 import { usePathname, useRouter } from 'next/navigation';
 import DBConfigModal from './DBConfigModal';
 import OnboardingTour from './OnboardingTour';
@@ -29,10 +29,26 @@ export default function HeaderActions() {
     router.push('/editor');
   };
 
+  const isEditorPage = pathname?.startsWith('/editor');
+  const hideNewPostButton = isProjectsPage || isEditorPage;
+
   return (
     <>
-      <div className="flex items-center gap-md">
+      <div className="flex items-center gap-xs sm:gap-md">
         <ModeToggle />
+        {isEditorPage && (
+          <Button
+            variant="ghost"
+            size="icon"
+            id="editor-sidebar-toggle"
+            className="h-9 w-9 text-body hover:text-ink cursor-pointer"
+            onClick={() => window.dispatchEvent(new CustomEvent('toggle-editor-sidebar'))}
+            aria-label="Toggle post settings"
+            title="Post settings"
+          >
+            <SlidersHorizontal size={18} />
+          </Button>
+        )}
         <Button
           variant="ghost"
           size="icon"
@@ -43,15 +59,15 @@ export default function HeaderActions() {
         >
           <Settings size={18} />
         </Button>
-        {!isProjectsPage && (
+        {!hideNewPostButton && (
           <Button
             size="sm"
             id="new-post-button"
-            className="h-9 gap-md text-white cursor-pointer"
+            className="h-9 gap-sm text-white cursor-pointer px-3 sm:px-4"
             onClick={handleNewPost}
           >
             <Plus size={16} />
-            New post
+            <span className="hidden sm:inline">New post</span>
           </Button>
         )}
       </div>
