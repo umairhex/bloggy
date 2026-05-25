@@ -10,7 +10,7 @@ export const metadata = {
 export default function EditorPage() {
   return (
     <DashboardShell>
-      <div className="flex-1 flex flex-col overflow-hidden min-h-0 h-full">
+      <div className="flex h-full flex-1 flex-col overflow-hidden min-h-0">
         <EditorForm />
       </div>
     </DashboardShell>

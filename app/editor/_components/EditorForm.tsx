@@ -9,7 +9,7 @@ import Placeholder from '@tiptap/extension-placeholder';
 import { PostStatus } from '@/types';
 import { Button } from '@/components/ui/button';
 import { toast } from 'sonner';
-import { Save, Eye, FileText } from 'lucide-react';
+import { Save, Eye, FileText, Settings } from 'lucide-react';
 import EditorToolbar from './EditorToolbar';
 import EditorSidebar from './EditorSidebar';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
@@ -38,6 +38,7 @@ export default function EditorForm() {
   const [seoTitle, setSeoTitle] = useState('');
   const [seoDescription, setSeoDescription] = useState('');
   const [savedPostId, setSavedPostId] = useState<string | null>(null);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   const { data: projects = [] } = useQuery(projectsQueryOptions());
   const [isSaving, setIsSaving] = useState(false);
@@ -70,7 +71,7 @@ export default function EditorForm() {
     editorProps: {
       attributes: {
         class:
-          'prose prose-sm max-w-none min-h-[420px] px-xl py-lg focus:outline-none text-ink leading-relaxed',
+          'prose prose-sm max-w-none min-h-[420px] px-md sm:px-lg md:px-xl py-lg focus:outline-none text-ink leading-relaxed',
       },
     },
     onUpdate: ({ editor }) => {
@@ -149,9 +150,19 @@ export default function EditorForm() {
   );
 
   return (
-    <div className="flex flex-1 overflow-hidden h-full">
-      <div className="flex-1 flex flex-col overflow-hidden min-h-0">
-        <div className="px-xl pt-lg pb-base border-b border-hairline bg-canvas shrink-0">
+    <div className="flex h-full flex-1 overflow-hidden">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Editor container */}
+      <div className="flex flex-1 flex-col overflow-hidden min-h-0">
+        <div className="border-b border-hairline bg-canvas shrink-0 space-y-base px-md py-base sm:px-lg sm:pt-lg sm:pb-base">
           <input
             id="post-title"
             type="text"
@@ -165,12 +176,12 @@ export default function EditorForm() {
               }
             }}
             placeholder="Untitled post…"
-            className="w-full text-display-xl font-bold text-ink bg-transparent border-none outline-none placeholder:text-hairline caret-primary"
+            className="w-full text-2xl font-bold sm:text-display-xl text-ink bg-transparent border-none outline-none placeholder:text-hairline caret-primary"
             autoFocus
           />
 
-          <div className="flex items-center gap-xs mt-sm">
-            <span className="text-xs text-muted shrink-0">bloggy.io/posts/</span>
+          <div className="flex items-center gap-xs">
+            <span className="shrink-0 text-xs text-muted">bloggy.io/posts/</span>
             <input
               type="text"
               value={slug}
@@ -179,12 +190,12 @@ export default function EditorForm() {
                 setSlugManuallyEdited(true);
               }}
               placeholder="post-slug"
-              className="flex-1 text-xs text-body bg-transparent border-none outline-none font-mono border-b border-transparent hover:border-hairline focus:border-primary transition-colors "
+              className="flex-1 text-xs text-body bg-transparent border-none outline-none font-mono border-b border-transparent hover:border-hairline focus:border-primary transition-colors"
             />
             {slugManuallyEdited && (
               <button
                 type="button"
-                className="text-[10px] text-muted hover:text-primary transition-colors"
+                className="shrink-0 text-[10px] text-muted hover:text-primary transition-colors"
                 onClick={() => {
                   setSlug(slugify(title));
                   setSlugManuallyEdited(false);
@@ -198,18 +209,19 @@ export default function EditorForm() {
 
         <EditorToolbar editor={editor} />
 
-        <div className="flex-1 overflow-y-auto min-h-0">
+        <div className="min-h-0 flex-1 overflow-y-auto">
           <EditorContent editor={editor} className="h-full" />
         </div>
 
-        <div className="h-10 border-t border-hairline bg-surface-soft px-lg flex items-center justify-between shrink-0">
+        <div className="flex h-10 shrink-0 items-center justify-between border-t border-hairline bg-surface-soft px-md sm:px-lg">
           <div className="flex items-center gap-base text-xs text-muted">
             <span className="flex items-center gap-xs">
               <FileText size={11} />
-              {wordCount} words
+              <span className="hidden sm:inline">{wordCount} words</span>
+              <span className="sm:hidden">{wordCount}w</span>
             </span>
           </div>
-          <div className="flex items-center gap-md">
+          <div className="flex items-center gap-xs sm:gap-md">
             <Button
               type="button"
               variant="ghost"
@@ -219,7 +231,8 @@ export default function EditorForm() {
               disabled={isSaving}
             >
               <Save size={13} />
-              Save draft
+              <span className="hidden sm:inline">Save draft</span>
+              <span className="sm:hidden">Draft</span>
             </Button>
             <Button
               type="button"
@@ -230,7 +243,8 @@ export default function EditorForm() {
               disabled={isSaving}
             >
               <Save size={13} />
-              Save {status.toLowerCase()}
+              <span className="hidden sm:inline">Save {status.toLowerCase()}</span>
+              <span className="sm:hidden">{status.charAt(0)}</span>
             </Button>
             <Button
               type="button"
@@ -239,29 +253,46 @@ export default function EditorForm() {
               className="h-7 gap-xs text-xs text-body hover:text-ink"
             >
               <Eye size={13} />
-              Preview
+              <span className="hidden sm:inline">Preview</span>
+            </Button>
+            <Button
+              type="button"
+              variant="ghost"
+              size="sm"
+              className="h-7 gap-xs text-xs text-body hover:text-ink md:hidden"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle post settings"
+            >
+              <Settings size={13} />
             </Button>
           </div>
         </div>
       </div>
 
-      <EditorSidebar
-        status={status}
-        setStatus={setStatus}
-        publishDate={publishDate}
-        setPublishDate={setPublishDate}
-        tags={tags}
-        setTags={setTags}
-        featuredImageUrl={featuredImageUrl}
-        setFeaturedImageUrl={setFeaturedImageUrl}
-        seoTitle={seoTitle}
-        setSeoTitle={setSeoTitle}
-        seoDescription={seoDescription}
-        setSeoDescription={setSeoDescription}
-        selectedProjectId={selectedProjectId}
-        setSelectedProjectId={setSelectedProjectId}
-        projects={projects}
-      />
+      {/* Sidebar - Desktop visible, Mobile as drawer */}
+      <div
+        className={`fixed bottom-0 right-0 top-0 z-50 w-72 border-l border-hairline bg-surface-soft md:sticky md:translate-x-0 transition-transform duration-300 ${
+          sidebarOpen ? 'translate-x-0' : 'translate-x-full'
+        }`}
+      >
+        <EditorSidebar
+          status={status}
+          setStatus={setStatus}
+          publishDate={publishDate}
+          setPublishDate={setPublishDate}
+          tags={tags}
+          setTags={setTags}
+          featuredImageUrl={featuredImageUrl}
+          setFeaturedImageUrl={setFeaturedImageUrl}
+          seoTitle={seoTitle}
+          setSeoTitle={setSeoTitle}
+          seoDescription={seoDescription}
+          setSeoDescription={setSeoDescription}
+          selectedProjectId={selectedProjectId}
+          setSelectedProjectId={setSelectedProjectId}
+          projects={projects}
+        />
+      </div>
     </div>
   );
 }

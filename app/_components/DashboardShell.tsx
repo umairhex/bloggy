@@ -9,24 +9,33 @@ import SidebarNav from './SidebarNav';
 import UserFooter from './UserFooter';
 import HeaderBreadcrumbs from './HeaderBreadcrumbs';
 import HeaderActions from './HeaderActions';
-import DashboardFooter from './DashboardFooter';
 
 interface DashboardShellProps {
   children: React.ReactNode;
 }
 
 export default function DashboardShell({ children }: DashboardShellProps) {
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
-    <div className="flex h-screen bg-canvas overflow-hidden">
+    <div className="flex h-dvh bg-canvas overflow-hidden">
+      {/* Mobile overlay */}
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 z-40 bg-black/50 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+          aria-hidden="true"
+        />
+      )}
+
+      {/* Sidebar */}
       <aside
-        className={`shrink-0 border-r border-hairline bg-surface-soft flex flex-col transition-all duration-300 ease-out ${
-          sidebarOpen ? 'w-56' : 'w-0'
-        } overflow-hidden`}
+        className={`fixed bottom-0 left-0 top-0 z-50 flex w-56 flex-col border-r border-hairline bg-surface-soft transition-all duration-300 ease-out md:sticky md:translate-x-0 ${
+          sidebarOpen ? 'translate-x-0' : '-translate-x-full'
+        }`}
       >
-        <div className="h-16 px-base border-b border-hairline flex flex-col justify-center shrink-0">
-          <p className="font-serif text-title-md font-semibold tracking-tight text-ink">
+        <div className="flex h-16 shrink-0 flex-col justify-center border-b border-hairline px-base">
+          <p className="text-title-md font-serif font-semibold tracking-tight text-ink">
             bloggy<span className="text-primary">.</span>
           </p>
           <p className="text-xs text-body">Content workspace</p>
@@ -37,27 +46,28 @@ export default function DashboardShell({ children }: DashboardShellProps) {
         <UserFooter />
       </aside>
 
-      <div className="flex-1 flex flex-col overflow-hidden min-w-0">
-        <header className="h-16 border-b border-hairline flex items-center justify-between px-lg shrink-0 bg-canvas">
-          <div className="flex items-center gap-md">
+      <div className="flex flex-1 flex-col overflow-hidden">
+        {/* Header */}
+        <header className="flex h-16 shrink-0 items-center justify-between border-b border-hairline bg-canvas px-md md:px-lg">
+          <div className="flex min-w-0 items-center gap-md">
             <Button
               variant="ghost"
               size="icon"
-              className="h-9 w-9"
+              className="h-9 w-9 md:hidden"
               onClick={() => setSidebarOpen(!sidebarOpen)}
+              aria-label="Toggle sidebar"
             >
               {sidebarOpen ? <X size={18} /> : <Menu size={18} />}
             </Button>
-            <HeaderBreadcrumbs />
+            <div className="min-w-0">
+              <HeaderBreadcrumbs />
+            </div>
           </div>
           <HeaderActions />
         </header>
 
-        <main className="flex-1 flex flex-col overflow-hidden min-h-0 relative">{children}</main>
-
-        <div className="shrink-0">
-          <DashboardFooter />
-        </div>
+        {/* Main content */}
+        <main className="relative flex min-h-0 flex-1 flex-col overflow-hidden">{children}</main>
       </div>
     </div>
   );

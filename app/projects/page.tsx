@@ -23,7 +23,7 @@ export default async function ProjectsPage() {
   return (
     <HydrationBoundary state={dehydrate(queryClient)}>
       <DashboardShell>
-        <main className="p-lg space-y-lg">
+        <main className="space-y-md overflow-y-auto p-md sm:p-lg md:space-y-lg">
           <ProjectsManager />
         </main>
       </DashboardShell>

@@ -30,6 +30,7 @@ interface ToolbarButton {
   action: () => void;
   isActive?: boolean;
   disabled?: boolean;
+  hideOnMobile?: boolean;
 }
 
 export default function EditorToolbar({ editor }: EditorToolbarProps) {
@@ -68,12 +69,14 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         icon: <Underline size={14} />,
         action: () => editor.chain().focus().toggleUnderline().run(),
         isActive: editor.isActive('underline'),
+        hideOnMobile: true,
       },
       {
         label: 'Strikethrough',
         icon: <Strikethrough size={14} />,
         action: () => editor.chain().focus().toggleStrike().run(),
         isActive: editor.isActive('strike'),
+        hideOnMobile: true,
       },
       {
         label: 'Inline Code',
@@ -94,6 +97,7 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         icon: <Heading3 size={14} />,
         action: () => editor.chain().focus().toggleHeading({ level: 3 }).run(),
         isActive: editor.isActive('heading', { level: 3 }),
+        hideOnMobile: true,
       },
     ],
     [
@@ -108,48 +112,55 @@ export default function EditorToolbar({ editor }: EditorToolbarProps) {
         icon: <ListOrdered size={14} />,
         action: () => editor.chain().focus().toggleOrderedList().run(),
         isActive: editor.isActive('orderedList'),
+        hideOnMobile: true,
       },
       {
         label: 'Blockquote',
         icon: <Quote size={14} />,
         action: () => editor.chain().focus().toggleBlockquote().run(),
         isActive: editor.isActive('blockquote'),
+        hideOnMobile: true,
       },
       {
         label: 'Divider',
         icon: <Minus size={14} />,
         action: () => editor.chain().focus().setHorizontalRule().run(),
+        hideOnMobile: true,
       },
     ],
   ];
 
   return (
-    <div className="flex items-center flex-wrap gap-xs px-md py-sm border-b border-hairline bg-surface-soft">
-      {groups.map((group, gi) => (
-        <React.Fragment key={gi}>
-          {gi > 0 && <Separator orientation="vertical" className="h-5 mx-xs bg-hairline" />}
-          <div className="flex items-center gap-xs">
-            {group.map((btn) => (
-              <Button
-                key={btn.label}
-                type="button"
-                variant="ghost"
-                size="icon"
-                className={`h-7 w-7 rounded-sm transition-colors ${
-                  btn.isActive
-                    ? 'bg-primary text-on-primary hover:bg-primary-active'
-                    : 'text-body hover:text-ink hover:bg-hairline cursor-pointer'
-                }`}
-                onClick={btn.action}
-                disabled={btn.disabled}
-                aria-label={btn.label}
-              >
-                {btn.icon}
-              </Button>
-            ))}
-          </div>
-        </React.Fragment>
-      ))}
+    <div className="overflow-x-auto border-b border-hairline bg-surface-soft px-md py-sm">
+      <div className="flex items-center gap-xs min-w-max md:flex-wrap">
+        {groups.map((group, gi) => (
+          <React.Fragment key={gi}>
+            {gi > 0 && <Separator orientation="vertical" className="h-5 mx-xs bg-hairline" />}
+            <div className="flex items-center gap-xs">
+              {group.map((btn) => (
+                <Button
+                  key={btn.label}
+                  type="button"
+                  variant="ghost"
+                  size="icon"
+                  className={`h-7 w-7 shrink-0 rounded-sm transition-colors ${
+                    btn.hideOnMobile ? 'hidden md:inline-flex' : ''
+                  } ${
+                    btn.isActive
+                      ? 'bg-primary text-on-primary hover:bg-primary-active'
+                      : 'text-body hover:text-ink hover:bg-hairline cursor-pointer'
+                  }`}
+                  onClick={btn.action}
+                  disabled={btn.disabled}
+                  aria-label={btn.label}
+                >
+                  {btn.icon}
+                </Button>
+              ))}
+            </div>
+          </React.Fragment>
+        ))}
+      </div>
     </div>
   );
 }

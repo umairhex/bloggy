@@ -8,7 +8,7 @@ import RecentPostsSkeleton from './_components/RecentPostsSkeleton';
 export default function Page() {
   return (
     <DashboardShell>
-      <main className="p-lg space-y-lg">
+      <main className="space-y-md overflow-y-auto p-md sm:p-lg md:space-y-lg">
         <Suspense fallback={<StatsGridSkeleton />}>
           <StatsGrid />
         </Suspense>
