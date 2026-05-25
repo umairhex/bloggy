@@ -43,7 +43,12 @@ export function formatBlogPost(post: BlogPostDocument): BlogPost {
 export async function getBlogPosts() {
   await connectToDB();
 
-  const posts = await BlogPostModel.find().sort({ updatedAt: -1 }).lean<BlogPostDocument[]>();
+  try {
+    const posts = await BlogPostModel.find().sort({ updatedAt: -1 }).lean<BlogPostDocument[]>();
 
-  return posts.map(formatBlogPost);
+    return posts.map(formatBlogPost);
+  } catch (error) {
+    console.warn('Failed to fetch blog posts:', error);
+    return [];
+  }
 }

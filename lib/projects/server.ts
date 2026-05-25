@@ -35,7 +35,12 @@ export function formatProject(project: ProjectDocument): ProjectType {
 export async function getProjects() {
   await connectToDB();
 
-  const projects = await Project.find().sort({ createdAt: -1 }).lean<ProjectDocument[]>();
+  try {
+    const projects = await Project.find().sort({ createdAt: -1 }).lean<ProjectDocument[]>();
 
-  return projects.map(formatProject);
+    return projects.map(formatProject);
+  } catch (error) {
+    console.warn('Failed to fetch projects:', error);
+    return [];
+  }
 }

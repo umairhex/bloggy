@@ -13,7 +13,8 @@ export const connectToDB = async () => {
   const mongodbUri = getDBConfig() || process.env.MONGODB_URI;
 
   if (!mongodbUri) {
-    throw new Error('Please configure MongoDB connection. Go to Settings to add your MongoDB URI.');
+    console.warn('MongoDB not configured - skipping connection (common during build)');
+    return;
   }
 
   try {

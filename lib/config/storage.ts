@@ -91,7 +91,7 @@ export function isDBConfigured(): boolean {
 
     const config: DBConfig = JSON.parse(stored);
     const uri = deobfuscate(config.mongodbUri);
-    return uri && uri.trim().length > 0;
+    return typeof uri === 'string' && uri.trim().length > 0;
   } catch {
     return false;
   }
