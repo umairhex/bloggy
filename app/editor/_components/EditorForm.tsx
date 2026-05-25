@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 'use client';
 
 import React, { useState, useCallback, useEffect } from 'react';
@@ -13,6 +14,7 @@ import { toast } from 'sonner';
 import { Save, Eye, FileText, Settings } from 'lucide-react';
 import EditorToolbar from './EditorToolbar';
 import EditorSidebar from './EditorSidebar';
+import PostPreviewModal from '@/app/_components/PostPreviewModal';
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { projectsQueryOptions } from '@/lib/api/projects';
 import { createPost, postKeys, updatePost, postsQueryOptions } from '@/lib/api/posts';
@@ -41,6 +43,7 @@ export default function EditorForm() {
   const [seoDescription, setSeoDescription] = useState('');
   const [savedPostId, setSavedPostId] = useState<string | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
 
   const { data: projects = [] } = useQuery(projectsQueryOptions());
   const [isSaving, setIsSaving] = useState(false);
@@ -286,6 +289,7 @@ export default function EditorForm() {
               variant="ghost"
               size="sm"
               className="h-7 gap-xs text-xs text-body hover:text-ink cursor-pointer"
+              onClick={() => setIsPreviewOpen(true)}
             >
               <Eye size={13} />
               <span className="hidden sm:inline">Preview</span>
@@ -369,6 +373,21 @@ export default function EditorForm() {
           onClose={() => setSidebarOpen(false)}
         />
       </div>
+
+      <PostPreviewModal
+        isOpen={isPreviewOpen}
+        onClose={() => setIsPreviewOpen(false)}
+        post={{
+          title: title || 'Untitled Post',
+          content: editor ? editor.getHTML() : '',
+          tags,
+          excerpt: excerpt.trim() || (editor ? editor.getText().trim().slice(0, 220) : ''),
+          featuredImageUrl,
+          status,
+          publishDate,
+          projectId: selectedProjectId === 'none' ? '' : selectedProjectId,
+        }}
+      />
     </div>
   );
 }

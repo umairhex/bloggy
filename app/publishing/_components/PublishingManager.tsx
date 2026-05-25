@@ -17,6 +17,7 @@ import { toast } from 'sonner';
 import { BlogPost, PostStatus } from '@/types';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
+import PostPreviewModal from '@/app/_components/PostPreviewModal';
 import { Checkbox } from '@/components/ui/checkbox';
 import { Input } from '@/components/ui/input';
 import { Progress } from '@/components/ui/progress';
@@ -81,6 +82,7 @@ export default function PublishingManager() {
   const [activeTab, setActiveTab] = useState<(typeof statusTabs)[number]>('All');
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedIds, setSelectedIds] = useState<string[]>([]);
+  const [previewPost, setPreviewPost] = useState<BlogPost | null>(null);
   const [deleteDialog, setDeleteDialog] = useState({
     isOpen: false,
     ids: [] as string[],
@@ -400,10 +402,16 @@ export default function PublishingManager() {
                             />
                           </TableCell>
                           <TableCell className="min-w-72">
-                            <div className="flex flex-col gap-1">
-                              <span className="font-semibold text-ink">{post.title}</span>
+                            <button
+                              type="button"
+                              className="flex flex-col gap-xs text-left cursor-pointer group/title focus:outline-none"
+                              onClick={() => setPreviewPost(post)}
+                            >
+                              <span className="font-semibold text-ink group-hover/title:text-primary transition-colors">
+                                {post.title}
+                              </span>
                               <span className="text-xs text-body font-mono">/{post.slug}</span>
-                            </div>
+                            </button>
                           </TableCell>
                           <TableCell>
                             <Badge
@@ -489,6 +497,12 @@ export default function PublishingManager() {
           </AlertDialogFooter>
         </AlertDialogContent>
       </AlertDialog>
+
+      <PostPreviewModal
+        isOpen={!!previewPost}
+        onClose={() => setPreviewPost(null)}
+        post={previewPost}
+      />
     </div>
   );
 }

@@ -2,12 +2,9 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
 import { navItems } from '../_constants';
 
 export default function UserFooter() {
-  const pathname = usePathname();
-
   const configSection = navItems.find((s) => s.label === 'Configuration');
 
   if (!configSection || !configSection.links.length) {

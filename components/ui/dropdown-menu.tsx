@@ -58,6 +58,8 @@ function DropdownMenuItem({
 }) {
   return (
     <DropdownMenuPrimitive.Item
+      data-inset={inset}
+      data-variant={variant}
       className={cn(
         "relative flex cursor-default items-center gap-md rounded-sm px-md py-sm text-sm font-medium text-ink outline-hidden select-none focus:bg-surface-soft focus:text-ink data-[variant=destructive]:text-primary-error-text data-[variant=destructive]:focus:bg-primary-error-text/10 data-[variant=destructive]:focus:text-primary-error-text data-disabled:pointer-events-none data-disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4",
         className

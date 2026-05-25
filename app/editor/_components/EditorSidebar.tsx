@@ -16,7 +16,6 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { Database, X, ImageIcon, Search, Tag } from 'lucide-react';
-import { ScrollArea } from '@/components/ui/scroll-area';
 
 interface EditorSidebarProps {
   status: PostStatus;
@@ -304,6 +303,7 @@ export default function EditorSidebar({
             />
             {featuredImageUrl && (
               <div className="relative rounded-sm overflow-hidden border border-hairline h-24 bg-surface-strong">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
                 <img
                   src={featuredImageUrl}
                   alt="Featured preview"
