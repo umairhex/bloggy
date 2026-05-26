@@ -1,7 +1,7 @@
 import mongoose from 'mongoose';
 import { cookies } from 'next/headers';
 
-let isConnected = false;
+let connectionPromise: Promise<boolean> | null = null;
 const projectConnections = new Map<string, mongoose.Connection>();
 
 function deobfuscate(str: string): string {
@@ -13,54 +13,61 @@ function deobfuscate(str: string): string {
 }
 
 export const connectToDB = async () => {
-  if (isConnected) {
-    console.log('Already connected to MongoDB');
+  if (mongoose.connection.readyState === 1) {
     return true;
   }
 
-  mongoose.set('bufferCommands', false);
+  if (connectionPromise) {
+    return connectionPromise;
+  }
 
-  let mongodbUri: string | undefined;
+  connectionPromise = (async () => {
+    mongoose.set('bufferCommands', false);
 
-  try {
-    const cookieStore = await cookies();
-    const storedCookie = cookieStore.get('bloggy_db_config');
-    if (storedCookie?.value) {
-      try {
-        const config = JSON.parse(decodeURIComponent(storedCookie.value));
-        if (config && config.mongodbUri) {
-          mongodbUri = deobfuscate(config.mongodbUri);
+    let mongodbUri: string | undefined;
+
+    try {
+      const cookieStore = await cookies();
+      const storedCookie = cookieStore.get('bloggy_db_config');
+      if (storedCookie?.value) {
+        try {
+          const config = JSON.parse(decodeURIComponent(storedCookie.value));
+          if (config && config.mongodbUri) {
+            mongodbUri = deobfuscate(config.mongodbUri);
+          }
+        } catch {
+          mongodbUri = deobfuscate(storedCookie.value);
         }
-      } catch {
-        mongodbUri = deobfuscate(storedCookie.value);
       }
+    } catch (error) {
+      console.warn('Could not retrieve DB config from cookies (common during build):', error);
     }
-  } catch (error) {
-    console.warn('Could not retrieve DB config from cookies (common during build):', error);
-  }
 
-  if (!mongodbUri) {
-    mongodbUri = process.env.MONGODB_URI;
-  }
+    if (!mongodbUri) {
+      mongodbUri = process.env.MONGODB_URI;
+    }
 
-  if (!mongodbUri) {
-    console.warn('MongoDB not configured - skipping connection (common during build)');
-    return false;
-  }
+    if (!mongodbUri) {
+      console.warn('MongoDB not configured - skipping connection (common during build)');
+      return false;
+    }
 
-  try {
-    await mongoose.connect(mongodbUri, {
-      bufferCommands: false,
-      serverSelectionTimeoutMS: 5000,
-      connectTimeoutMS: 5000,
-    });
-    isConnected = true;
-    console.log('Connected to MongoDB');
-    return true;
-  } catch (error) {
-    console.error('Error connecting to MongoDB:', error);
-    return false;
-  }
+    try {
+      await mongoose.connect(mongodbUri, {
+        bufferCommands: false,
+        serverSelectionTimeoutMS: 5000,
+        connectTimeoutMS: 5000,
+      });
+      console.log('Connected to MongoDB');
+      return true;
+    } catch (error) {
+      console.error('Error connecting to MongoDB:', error);
+      connectionPromise = null;
+      return false;
+    }
+  })();
+
+  return connectionPromise;
 };
 
 export function isLocalMongoUri(mongodbUri: string): boolean {
