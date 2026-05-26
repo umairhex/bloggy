@@ -128,3 +128,108 @@ export function validateMongoDBURI(uri: string): { valid: boolean; error?: strin
     return { valid: false, error: 'Invalid MongoDB URI format' };
   }
 }
+
+const CLOUDINARY_KEY = 'bloggy_cloudinary_config';
+
+export interface CloudinaryConfig {
+  cloudName: string;
+  apiKey: string;
+  apiSecret: string;
+  timestamp: number;
+}
+
+export function saveCloudinaryConfig(cloudName: string, apiKey: string, apiSecret: string): void {
+  if (typeof window === 'undefined') {
+    throw new Error('Storage is only available in the browser');
+  }
+
+  if (!cloudName?.trim() || !apiKey?.trim() || !apiSecret?.trim()) {
+    throw new Error('All Cloudinary credentials are required');
+  }
+
+  const config: CloudinaryConfig = {
+    cloudName: cloudName.trim(),
+    apiKey: apiKey.trim(),
+    apiSecret: obfuscate(apiSecret.trim()),
+    timestamp: Date.now(),
+  };
+
+  const serialized = JSON.stringify(config);
+
+  try {
+    localStorage.setItem(CLOUDINARY_KEY, serialized);
+  } catch (error) {
+    if (error instanceof Error && error.name === 'QuotaExceededError') {
+      throw new Error('localStorage is full');
+    }
+    throw error;
+  }
+
+  try {
+    const expires = new Date(Date.now() + 365 * 864e5).toUTCString();
+    document.cookie = `${CLOUDINARY_KEY}=${encodeURIComponent(serialized)}; expires=${expires}; path=/; SameSite=Lax; Secure`;
+  } catch (cookieError) {
+    console.error('Failed to set Cloudinary config cookie:', cookieError);
+  }
+}
+
+export function getCloudinaryConfig(): { cloudName: string; apiKey: string; apiSecret: string } | null {
+  if (typeof window === 'undefined') {
+    return null;
+  }
+
+  try {
+    const stored = localStorage.getItem(CLOUDINARY_KEY);
+    if (!stored) {
+      return null;
+    }
+
+    const config: CloudinaryConfig = JSON.parse(stored);
+    return {
+      cloudName: config.cloudName,
+      apiKey: config.apiKey,
+      apiSecret: deobfuscate(config.apiSecret),
+    };
+  } catch {
+    return null;
+  }
+}
+
+export function isCloudinaryConfigured(): boolean {
+  if (typeof window === 'undefined') {
+    return false;
+  }
+
+  try {
+    const stored = localStorage.getItem(CLOUDINARY_KEY);
+    if (!stored) {
+      return false;
+    }
+
+    const config: CloudinaryConfig = JSON.parse(stored);
+    return (
+      typeof config.cloudName === 'string' &&
+      config.cloudName.trim().length > 0 &&
+      typeof config.apiKey === 'string' &&
+      config.apiKey.trim().length > 0
+    );
+  } catch {
+    return false;
+  }
+}
+
+export function clearCloudinaryConfig(): void {
+  if (typeof window === 'undefined') {
+    return;
+  }
+
+  try {
+    localStorage.removeItem(CLOUDINARY_KEY);
+  } catch {}
+
+  try {
+    document.cookie = `${CLOUDINARY_KEY}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Lax; Secure`;
+  } catch (cookieError) {
+    console.error('Failed to clear Cloudinary config cookie:', cookieError);
+  }
+}

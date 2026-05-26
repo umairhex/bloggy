@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Project, PostStatus } from '@/types';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
@@ -15,7 +15,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { Database, X, ImageIcon, Search, Tag } from 'lucide-react';
+import { Database, X, ImageIcon, Search, Tag, Upload, AlertTriangle, CloudLightning } from 'lucide-react';
+import { isCloudinaryConfigured } from '@/lib/config/storage';
+import { toast } from 'sonner';
 
 interface EditorSidebarProps {
   status: PostStatus;
@@ -59,6 +61,65 @@ export default function EditorSidebar({
   onClose,
 }: EditorSidebarProps) {
   const [tagInput, setTagInput] = useState('');
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [imageError, setImageError] = useState(false);
+  const [cloudinaryActive, setCloudinaryActive] = useState(false);
+
+  useEffect(() => {
+    setCloudinaryActive(isCloudinaryConfigured());
+
+    const handleConfigChange = () => {
+      setCloudinaryActive(isCloudinaryConfigured());
+    };
+
+    window.addEventListener('cloudinary-configured', handleConfigChange);
+    return () => {
+      window.removeEventListener('cloudinary-configured', handleConfigChange);
+    };
+  }, []);
+
+  useEffect(() => {
+    setImageError(false);
+  }, [featuredImageUrl]);
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    if (!file.type.startsWith('image/')) {
+      toast.error('Only image files are supported.');
+      return;
+    }
+
+    setIsUploading(true);
+    const formData = new FormData();
+    formData.append('file', file);
+
+    try {
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || 'Failed to upload image.');
+      }
+
+      setFeaturedImageUrl(data.url);
+      toast.success('Cover image uploaded successfully!');
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Could not upload image';
+      toast.error(message);
+    } finally {
+      setIsUploading(false);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
+    }
+  };
 
   console.log('EditorSidebar rendering with props:', {
     tags,
@@ -293,25 +354,84 @@ export default function EditorSidebar({
               <ImageIcon size={11} className="inline mr-xs" />
               Featured Image URL
             </Label>
-            <Input
-              id="featured-image"
-              type="url"
-              value={featuredImageUrl}
-              onChange={(e) => setFeaturedImageUrl(e.target.value)}
-              placeholder="https://example.com/cover.jpg"
-              className="h-9 text-xs bg-canvas border-hairline font-mono"
+            <div className="flex gap-xs">
+              <Input
+                id="featured-image"
+                type="url"
+                value={featuredImageUrl}
+                onChange={(e) => setFeaturedImageUrl(e.target.value)}
+                placeholder="https://example.com/cover.jpg"
+                className="h-9 text-xs bg-canvas border-hairline font-mono flex-1 text-ink focus:border-primary focus:outline-none"
+              />
+              {featuredImageUrl && (
+                <Button
+                  type="button"
+                  variant="outline"
+                  size="icon"
+                  onClick={() => setFeaturedImageUrl('')}
+                  className="h-9 w-9 shrink-0 border-hairline text-body hover:text-ink cursor-pointer"
+                  title="Clear cover image"
+                >
+                  <X size={14} />
+                </Button>
+              )}
+            </div>
+
+            <input
+              type="file"
+              ref={fileInputRef}
+              onChange={handleFileChange}
+              accept="image/*"
+              className="hidden"
             />
+
+            {cloudinaryActive ? (
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                disabled={isUploading}
+                onClick={() => fileInputRef.current?.click()}
+                className="w-full h-8 border-hairline text-ink hover:bg-surface-strong gap-xs text-[10px] uppercase tracking-wider font-bold cursor-pointer"
+              >
+                <Upload size={12} className={isUploading ? 'animate-spin' : ''} />
+                {isUploading ? 'Uploading cover...' : 'Upload cover image'}
+              </Button>
+            ) : (
+              <div className="rounded-sm border border-hairline bg-surface-soft p-sm text-[10px] text-body flex flex-col gap-xs mt-xs leading-normal">
+                <span className="font-semibold text-ink flex items-center gap-xs">
+                  <CloudLightning size={10} className="text-primary shrink-0" />
+                  Image Upload Offline
+                </span>
+                <span>To unlock direct cover uploads, connect your Cloudinary credentials in workspace settings.</span>
+                <button
+                  type="button"
+                  onClick={() => window.dispatchEvent(new CustomEvent('open-db-config-modal'))}
+                  className="text-primary hover:underline font-bold text-left mt-xxs uppercase tracking-wider cursor-pointer text-[9px]"
+                >
+                  Configure Cloudinary
+                </button>
+              </div>
+            )}
+
             {featuredImageUrl && (
-              <div className="relative rounded-sm overflow-hidden border border-hairline h-24 bg-surface-strong">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img
-                  src={featuredImageUrl}
-                  alt="Featured preview"
-                  className="w-full h-full object-cover"
-                  onError={(e) => {
-                    (e.target as HTMLImageElement).style.display = 'none';
-                  }}
-                />
+              <div className="relative rounded-sm overflow-hidden border border-hairline h-28 bg-surface-strong flex items-center justify-center mt-sm">
+                {imageError ? (
+                  <div className="flex flex-col items-center justify-center text-muted p-sm text-center gap-xs">
+                    <AlertTriangle size={18} className="text-amber-500 shrink-0" />
+                    <span className="text-[10px] leading-tight">Failed to load cover image. Please check the URL.</span>
+                  </div>
+                ) : (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img
+                    src={featuredImageUrl}
+                    alt="Featured preview"
+                    className="w-full h-full object-cover"
+                    onError={() => {
+                      setImageError(true);
+                    }}
+                  />
+                )}
               </div>
             )}
           </div>

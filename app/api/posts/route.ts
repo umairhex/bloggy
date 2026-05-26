@@ -224,9 +224,13 @@ export async function DELETE(req: Request) {
       if (isLocalMongoUri(project.mongodbUri) && process.env.NODE_ENV === 'production') {
         continue;
       }
-      const connection = await getProjectConnection(project.mongodbUri);
-      const ProjectBlogPost = getBlogPostModel(connection);
-      await ProjectBlogPost.deleteMany({ id: { $in: projectPostIds }, projectId });
+      try {
+        const connection = await getProjectConnection(project.mongodbUri);
+        const ProjectBlogPost = getBlogPostModel(connection);
+        await ProjectBlogPost.deleteMany({ id: { $in: projectPostIds }, projectId });
+      } catch (projectError) {
+        console.warn(`Failed to delete mirrored posts for project ${projectId}:`, projectError);
+      }
     }
 
     if (Object.keys(projectGroups).length === 0) {
@@ -234,9 +238,13 @@ export async function DELETE(req: Request) {
         if (isLocalMongoUri(project.mongodbUri) && process.env.NODE_ENV === 'production') {
           continue;
         }
-        const connection = await getProjectConnection(project.mongodbUri);
-        const ProjectBlogPost = getBlogPostModel(connection);
-        await ProjectBlogPost.deleteMany({ id: { $in: ids } });
+        try {
+          const connection = await getProjectConnection(project.mongodbUri);
+          const ProjectBlogPost = getBlogPostModel(connection);
+          await ProjectBlogPost.deleteMany({ id: { $in: ids } });
+        } catch (projectError) {
+          console.warn(`Failed to delete mirrored posts for project fallback ${project.id}:`, projectError);
+        }
       }
     }
 
